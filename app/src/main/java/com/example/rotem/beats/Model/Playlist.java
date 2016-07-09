@@ -25,7 +25,7 @@ public class Playlist {
         setTitle(title);
         setAuthor(author);
         // set current date as creation date
-        SimpleDateFormat df = new SimpleDateFormat("dd-mm-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String formattedDate = df.format(Calendar.getInstance().getTime());
         setCreationDate(formattedDate);
         setPhoto(null);

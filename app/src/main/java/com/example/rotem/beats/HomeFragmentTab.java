@@ -89,7 +89,7 @@ public class HomeFragmentTab extends Fragment {
             Playlist st = data.get(position);
 
             title.setText(st.getTitle());
-            author.setText("by" + st.getAuthor() + "at" + st.getCreationDate());
+            author.setText("by " + st.getAuthor() + " at " + st.getCreationDate());
 
             return convertView;
         }
