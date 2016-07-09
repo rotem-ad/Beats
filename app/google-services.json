@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "639165161379",
+    "firebase_url": "https://beatsdb-3c2f1.firebaseio.com",
+    "project_id": "beatsdb-3c2f1",
+    "storage_bucket": "beatsdb-3c2f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639165161379:android:715a7e6251fe7455",
+        "android_client_info": {
+          "package_name": "com.example.rotem.beats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "639165161379-ksd011m8tnc7d19crcdntg6vgie0ao5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-mNG5DcNX8hmpgjUsUzoePgPYlxgp9vQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
