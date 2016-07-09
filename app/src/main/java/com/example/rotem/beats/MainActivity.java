@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Setting custom tab icons.
-        homeTab = actionBar.newTab().setText("Home");
-        myBeatsTab = actionBar.newTab().setText("My Beats");
+        homeTab = actionBar.newTab().setText(R.string.title_home_fragment);
+        myBeatsTab = actionBar.newTab().setText(R.string.title_my_beats_fragment);
 
         // Setting tab listeners.
         homeTab.setTabListener(new TabListener(homeFragmentTab));
