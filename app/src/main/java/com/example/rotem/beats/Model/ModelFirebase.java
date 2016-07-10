@@ -39,9 +39,18 @@ public class ModelFirebase {
                 });
     }
 
+
     public String getUserId() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
             return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }else{
+            return null;
+        }
+    }
+
+    public String getUserEmail() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getEmail();
         }else{
             return null;
         }

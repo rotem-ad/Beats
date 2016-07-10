@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(MyApplication.getAppContext(), "Login succeeded" ,
                                     Toast.LENGTH_SHORT).show();
                             Log.d("LoginActivity", "login success");
+                            Log.d("LoginActivity", "user is: " + Model.getInstance().getUserEmail());
 
                             // start home activity
                             Intent intent = new Intent(v.getContext(), MainActivity.class);

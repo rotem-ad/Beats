@@ -39,8 +39,13 @@ public class Model {
     public void signup(String email, String pwd, AuthListener listener){
         modelFirebase.signup( email,  pwd,  listener);
     }
+
     public String getUserId(){
         return modelFirebase.getUserId();
+    }
+
+    public String getUserEmail(){
+        return modelFirebase.getUserEmail();
     }
 
     public void signout(){
