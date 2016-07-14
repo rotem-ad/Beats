@@ -1,13 +1,23 @@
 package com.example.rotem.beats.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Rotem on 25/06/2016.
@@ -17,16 +27,13 @@ public class ModelFirebase {
     FirebaseDatabase database;
     DatabaseReference dbRef;
 
+    List<Playlist> playlistData; // TODO: replace with Firebase
+
     public ModelFirebase() {
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
-
-        // TODO: need to test
-        Playlist pl1 = new Playlist("123456","Rotem's Playlist","Rotem");
-        Playlist pl2 = new Playlist("123123","John's Playlist","John");
-        dbRef.child("playlists").child("id1").setValue(pl1);
+        //seed();
     }
-
 
     public void signup(String email, String password, final Model.AuthListener listener){
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -75,5 +82,53 @@ public class ModelFirebase {
 
     public void signout() {
         FirebaseAuth.getInstance().signOut();
+    }
+
+
+    public void getAllPlaylistsAsynch(final Model.GetPlaylistsListener listener) {
+        DatabaseReference playlists = dbRef.child("playlists"); // ref to playlists collection
+        Query queryRef = playlists.orderByChild("author");
+
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                final List<Playlist> plList = new LinkedList<Playlist>();
+                Log.d("getAllPlaylistsAsynch", "read " + snapshot.getChildrenCount() + " new playlists");
+                for (DataSnapshot stSnapshot : snapshot.getChildren()) {
+                    Playlist playlist = stSnapshot.getValue(Playlist.class);
+                    Log.d("getAllPlaylistsAsynch", playlist.getAuthor() + " - " + playlist.getTitle());
+                    plList.add(playlist);
+                }
+                listener.onResult(plList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
+
+    private void seed() {
+        generateData();
+        DatabaseReference playlists = dbRef.child("playlists");
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        for (Playlist playlist : playlistData) {
+            String playlistId = playlists.push().getKey();
+            Map<String, Object> playlistValues = playlist.toMap();
+            childUpdates.put("/playlists/" + playlistId, playlistValues);
+        }
+
+        dbRef.updateChildren(childUpdates);
+    }
+
+    private void generateData() {
+        playlistData = new LinkedList<Playlist>();
+        playlistData.add(new Playlist("Rotem's Playlist","Rotem"));
+        playlistData.add(new Playlist("John's Playlist","John"));
+        playlistData.add(new Playlist("Stas Playlist","Stas"));
     }
 }

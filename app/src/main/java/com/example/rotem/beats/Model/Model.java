@@ -18,12 +18,16 @@ public class Model {
     //ModelCoulinary modelCloudinary;
     //ModelSql modelSql;
 
+    public interface GetPlaylistsListener{
+        public void onResult(List<Playlist> playlists);
+        public void onCancel();
+    }
+
     private Model(){
         context = MyApplication.getAppContext();
         modelFirebase = new ModelFirebase();
         //modelCloudinary = new ModelCoulinary();
         //modelSql = new ModelSql(MyApplication.getAppContext());
-        seed();
     }
 
     public static Model getInstance(){
@@ -60,6 +64,7 @@ public class Model {
         data.remove(pl);
     }
 
+    /*
     public Playlist getPlaylist(String id){
         for (Playlist pl:data) {
             if(pl.getId().equals(id)){
@@ -68,15 +73,14 @@ public class Model {
         }
         return null;
     }
+    */
+
+    public void getAllPlaylistsAsynch(final GetPlaylistsListener listener) {
+        modelFirebase.getAllPlaylistsAsynch(listener);
+    }
+
 
     public List<Playlist> getAllPlaylists(){
         return data;
-    }
-
-    private void seed() {
-        Playlist pl1 = new Playlist("123456","Rotem's Playlist","Rotem");
-        Playlist pl2 = new Playlist("123123","John's Playlist","John");
-        this.add(pl1);
-        this.add(pl2);
     }
 }

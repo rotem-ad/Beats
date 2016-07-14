@@ -1,14 +1,17 @@
 package com.example.rotem.beats.Model;
 
+import com.google.firebase.database.Exclude;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Rotem on 09/07/2016.
  */
 public class Playlist {
-    String id;
     String title;
     String author;
     String creationDate;
@@ -17,8 +20,11 @@ public class Playlist {
     List<Song> songList;
     int rating;
 
-    public Playlist(String id, String title, String author) {
-        setId(id);
+    public Playlist() {
+        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
+    }
+
+    public Playlist(String title, String author) {
         setTitle(title);
         setAuthor(author);
         // set current date as creation date
@@ -31,12 +37,18 @@ public class Playlist {
         setRating(0);
     }
 
-    public String getId() {
-        return id;
-    }
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("author", author);
+        result.put("title", title);
+        result.put("creationDate", creationDate);
+        result.put("photo", photo);
+        result.put("tags", tags);
+        result.put("songList", songList);
+        result.put("rating", rating);
 
-    public void setId(String id) {
-        this.id = id;
+        return result;
     }
 
     public String getCreationDate() {

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.rotem.beats.Model.Model;
@@ -21,6 +22,7 @@ public class HomeFragmentTab extends Fragment {
     ListView list;
     List<Playlist> data;
     MyAdapter adapter;
+    ProgressBar progressBar;
 
     public HomeFragmentTab() {
         // Required empty public constructor
@@ -32,9 +34,10 @@ public class HomeFragmentTab extends Fragment {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_home_tab, container, false);
 
+        progressBar = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
         list = (ListView) rootView.findViewById(R.id.playlist_listview);
-        data = Model.getInstance().getAllPlaylists();
-
+        loadPlaylistsData();
+        //data = Model.getInstance().getAllPlaylists()
         adapter = new MyAdapter();
         list.setAdapter(adapter);
 
@@ -51,6 +54,24 @@ public class HomeFragmentTab extends Fragment {
         */
 
         return rootView;
+    }
+
+
+    void loadPlaylistsData(){
+        progressBar.setVisibility(View.VISIBLE);
+        Model.getInstance().getAllPlaylistsAsynch(new Model.GetPlaylistsListener() {
+            @Override
+            public void onResult(List<Playlist> playlists) {
+                progressBar.setVisibility(View.GONE);
+                data = playlists; // data is null
+                adapter.notifyDataSetChanged(); // adapter is null
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
     }
 
 
