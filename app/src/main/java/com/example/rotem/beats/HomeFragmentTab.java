@@ -36,10 +36,8 @@ public class HomeFragmentTab extends Fragment {
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
         list = (ListView) rootView.findViewById(R.id.playlist_listview);
-        loadPlaylistsData();
-        //data = Model.getInstance().getAllPlaylists()
         adapter = new MyAdapter();
-        list.setAdapter(adapter);
+        loadPlaylistsData();
 
         /*
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,9 +60,10 @@ public class HomeFragmentTab extends Fragment {
         Model.getInstance().getAllPlaylistsAsynch(new Model.GetPlaylistsListener() {
             @Override
             public void onResult(List<Playlist> playlists) {
+                data = playlists;
+                list.setAdapter(adapter); // data must not be null at this point!
+                adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
-                data = playlists; // data is null
-                adapter.notifyDataSetChanged(); // adapter is null
             }
 
             @Override
@@ -107,10 +106,10 @@ public class HomeFragmentTab extends Fragment {
             TextView author = (TextView) convertView.findViewById(R.id.playlist_list_row_author);
             ImageView image = (ImageView) convertView.findViewById(R.id.playlist_list_row_image);
 
-            Playlist st = data.get(position);
+            Playlist playlist = data.get(position);
 
-            title.setText(st.getTitle());
-            author.setText("by " + st.getAuthor() + " at " + st.getCreationDate());
+            title.setText(playlist.getTitle());
+            author.setText("by " + playlist.getAuthor() + " at " + playlist.getCreationDate());
 
             return convertView;
         }
