@@ -39,6 +39,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 emailUserInput = String.valueOf(email.getText());
                 pwdUserInput = String.valueOf(password.getText());
+
+                // validate non empty input
+                if  (emailUserInput.isEmpty() || pwdUserInput.isEmpty()) {
+                    Toast.makeText(MyApplication.getAppContext(), "Email/Password can't be empty" ,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Model.getInstance().login(emailUserInput, pwdUserInput, new Model.AuthListener() {
                     @Override
                     public void onDone(String userId, Exception e) {

@@ -17,8 +17,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:noHistory="true"
-            android:label="@string/title_activity_login">
+            android:label="@string/title_activity_login"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +32,11 @@
         <activity
             android:name=".MyActivity"
             android:label="@string/title_activity_my"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PlaylistDetailsActivity"
+            android:label="@string/title_activity_playlist_details">
+        </activity>
     </application>
 
 </manifest>

@@ -14,13 +14,17 @@ public class Model {
     private final static Model instance = new Model();
     Context context;
     ModelFirebase modelFirebase;
-    List<Playlist> data = new LinkedList<Playlist>(); // TODO: replace with firebase
     //ModelCoulinary modelCloudinary;
     //ModelSql modelSql;
 
     public interface GetPlaylistsListener{
-        public void onResult(List<Playlist> playlists);
-        public void onCancel();
+        void onResult(List<Playlist> playlists);
+        void onCancel();
+    }
+
+    public interface GetPlaylist{
+        void onResult(Playlist playlist);
+        void onCancel();
     }
 
     private Model(){
@@ -56,15 +60,16 @@ public class Model {
         modelFirebase.signout();
     }
 
-    public void add(Playlist pl){
-        data.add(pl);
+    public void getAllPlaylistsAsynch(final GetPlaylistsListener listener) {
+        modelFirebase.getAllPlaylistsAsynch(listener);
     }
 
-    public void remove(Playlist pl){
-        data.remove(pl);
+    public void GetPlaylistById(String id, GetPlaylist listener){
+        modelFirebase.getPlaylistById(id,listener);
     }
 
     /*
+
     public Playlist getPlaylist(String id){
         for (Playlist pl:data) {
             if(pl.getId().equals(id)){
@@ -73,14 +78,18 @@ public class Model {
         }
         return null;
     }
-    */
-
-    public void getAllPlaylistsAsynch(final GetPlaylistsListener listener) {
-        modelFirebase.getAllPlaylistsAsynch(listener);
-    }
-
 
     public List<Playlist> getAllPlaylists(){
         return data;
     }
+
+     public void add(Playlist pl){
+        data.add(pl);
+    }
+
+    public void remove(Playlist pl){
+        data.remove(pl);
+    }
+
+    */
 }

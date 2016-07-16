@@ -1,16 +1,19 @@
 package com.example.rotem.beats;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
@@ -39,17 +42,17 @@ public class HomeFragmentTab extends Fragment {
         adapter = new MyAdapter();
         loadPlaylistsData();
 
-        /*
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Intent intent = new Intent(getActivity(), StudentDetailsActivity.class);
-                intent.putExtra("STUDENT_ID", data.get(position).getId());
-                startActivityForResult(intent,1);
+                String playlistId = data.get(position).getId();
+                //Toast.makeText(MyApplication.getAppContext(),"Playlist ID: " + playlistId , Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), PlaylistDetailsActivity.class);
+                intent.putExtra("PLAYLIST_ID", playlistId);
+                startActivityForResult(intent,1); // TODO: change 1 to constant
             }
         });
-        */
 
         return rootView;
     }

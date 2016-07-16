@@ -3,6 +3,7 @@ package com.example.rotem.beats.Model;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.rotem.beats.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -86,7 +87,7 @@ public class ModelFirebase {
 
 
     public void getAllPlaylistsAsynch(final Model.GetPlaylistsListener listener) {
-        DatabaseReference playlists = dbRef.child("playlists"); // ref to playlists collection
+        DatabaseReference playlists = dbRef.child(Constants.PLAYLISTS_COLLECTION); // ref to playlists collection
         Query queryRef = playlists.orderByChild("author");
 
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -94,8 +95,8 @@ public class ModelFirebase {
             public void onDataChange(DataSnapshot snapshot) {
                 final List<Playlist> plList = new LinkedList<Playlist>();
                 Log.d("getAllPlaylistsAsynch", "read " + snapshot.getChildrenCount() + " new playlists");
-                for (DataSnapshot stSnapshot : snapshot.getChildren()) {
-                    Playlist playlist = stSnapshot.getValue(Playlist.class);
+                for (DataSnapshot plSnapshot : snapshot.getChildren()) {
+                    Playlist playlist = plSnapshot.getValue(Playlist.class);
                     Log.d("getAllPlaylistsAsynch", playlist.getAuthor() + " - " + playlist.getTitle());
                     plList.add(playlist);
                 }
@@ -104,7 +105,25 @@ public class ModelFirebase {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getMessage());
+                Log.w("getAllPlaylistsAsynch", "The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
+    public void getPlaylistById(String id, final Model.GetPlaylist listener) {
+        DatabaseReference playlistRef = dbRef.child(Constants.PLAYLISTS_COLLECTION).child(id);
+        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Playlist playlist = snapshot.getValue(Playlist.class);
+                Log.d("getPlaylistById", playlist.getAuthor() + " - " + playlist.getTitle());
+                listener.onResult(playlist);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("getPlaylistById", "The read failed: " + databaseError.getMessage());
                 listener.onCancel();
             }
         });
@@ -117,7 +136,8 @@ public class ModelFirebase {
         Map<String, Object> childUpdates = new HashMap<>();
 
         for (Playlist playlist : playlistData) {
-            String playlistId = playlists.push().getKey();
+            String playlistId = playlists.push().getKey(); // generate key in DB
+            playlist.setId(playlistId); // set id to current playlist object based on its DB key
             Map<String, Object> playlistValues = playlist.toMap();
             childUpdates.put("/playlists/" + playlistId, playlistValues);
         }
@@ -131,4 +151,5 @@ public class ModelFirebase {
         playlistData.add(new Playlist("John's Playlist","John"));
         playlistData.add(new Playlist("Stas Playlist","Stas"));
     }
+
 }

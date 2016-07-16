@@ -12,6 +12,7 @@ import java.util.Map;
  * Created by Rotem on 09/07/2016.
  */
 public class Playlist {
+    String id;
     String title;
     String author;
     String creationDate;
@@ -35,11 +36,13 @@ public class Playlist {
         setTags(null);
         setSongList(null);
         setRating(0);
+        setId(null);
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
         result.put("author", author);
         result.put("title", title);
         result.put("creationDate", creationDate);
@@ -49,6 +52,14 @@ public class Playlist {
         result.put("rating", rating);
 
         return result;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCreationDate() {
