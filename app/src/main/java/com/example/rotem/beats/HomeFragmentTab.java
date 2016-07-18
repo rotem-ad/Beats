@@ -60,6 +60,7 @@ public class HomeFragmentTab extends Fragment {
 
     void loadPlaylistsData(){
         progressBar.setVisibility(View.VISIBLE);
+        String userId = Model.getInstance().getUserId();
         Model.getInstance().getAllPlaylistsAsynch(new Model.GetPlaylistsListener() {
             @Override
             public void onResult(List<Playlist> playlists) {

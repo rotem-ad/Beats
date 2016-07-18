@@ -68,6 +68,10 @@ public class Model {
         modelFirebase.getAllPlaylistsAsynch(listener);
     }
 
+    public void getPlaylistsByUser(String userId, final GetPlaylistsListener listener) {
+        modelFirebase.getPlaylistsByUser(userId, listener);
+    }
+
     public void GetPlaylistById(String id, GetPlaylist listener){
         modelFirebase.getPlaylistById(id,listener);
     }

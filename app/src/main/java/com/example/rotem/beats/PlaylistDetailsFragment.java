@@ -54,10 +54,12 @@ public class PlaylistDetailsFragment extends Fragment {
         Model.getInstance().GetPlaylistById(this.playlistId, new Model.GetPlaylist() {
             @Override
             public void onResult(Playlist playlist) {
-                title.setText(playlist.getTitle());
-                author.setText(playlist.getAuthor());
-                rating.setText(Integer.toString( playlist.getRating() ));
-                createDate.setText(playlist.getCreationDate());
+                if (playlist != null) {
+                    title.setText(playlist.getTitle());
+                    author.setText(playlist.getAuthor());
+                    rating.setText(Integer.toString( playlist.getRating() ));
+                    createDate.setText(playlist.getCreationDate());
+                }
                 progressBar.setVisibility(View.GONE);
             }
 

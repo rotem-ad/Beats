@@ -94,6 +94,103 @@ public class ModelFirebase {
 
 
     public void getAllPlaylistsAsynch(final Model.GetPlaylistsListener listener) {
+        DatabaseReference playlistRef = dbRef.child(Constants.USERS_COLLECTION); // ref to users collection
+        final List<Playlist> plList = new LinkedList<Playlist>();
+        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) { // for each user in collection
+                    for (DataSnapshot plSnapshot : userSnapshot.child(Constants.PLAYLISTS_COLLECTION).getChildren()) { // for each user's playlist
+                        Playlist playlist = plSnapshot.getValue(Playlist.class);
+                        Log.d("getAllPlaylistsAsynch", playlist.getAuthor() + " - " + playlist.getTitle());
+                        plList.add(playlist);
+                    }
+                }
+                listener.onResult(plList);
+                return;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("getAllPlaylistsAsynch", "The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
+
+    public void getPlaylistsByUser(String userId, final Model.GetPlaylistsListener listener) {
+        DatabaseReference userRef = dbRef.child(Constants.USERS_COLLECTION).child(userId); // ref to user
+        Query queryRef = userRef.child("playlists");
+
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                final List<Playlist> plList = new LinkedList<Playlist>();
+                Log.d("getPlaylistsByUser", "read " + snapshot.getChildrenCount() + " new playlists");
+                for (DataSnapshot plSnapshot : snapshot.getChildren()) {
+                    Playlist playlist = plSnapshot.getValue(Playlist.class);
+                    Log.d("getPlaylistsByUser", playlist.getAuthor() + " - " + playlist.getTitle());
+                    plList.add(playlist);
+                }
+                listener.onResult(plList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("getPlaylistsByUser", "The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
+
+    public void getPlaylistById(final String id, final Model.GetPlaylist listener) {
+        DatabaseReference playlistRef = dbRef.child(Constants.USERS_COLLECTION); // ref to users collection
+        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) { // for each user in collection
+                    for (DataSnapshot plSnapshot : userSnapshot.child(Constants.PLAYLISTS_COLLECTION).getChildren()) { // for each user's playlist
+                        Playlist playlist = plSnapshot.getValue(Playlist.class);
+                        Log.d("getPlaylistById", playlist.getAuthor() + " - " + playlist.getTitle());
+                        if (playlist.getId().equals(id)) { // check if playlist is found
+                            listener.onResult(playlist);
+                            return;
+                        }
+                    }
+                }
+                listener.onResult(null); // playlist was not found
+                return;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("getPlaylistById", "The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
+    public void getPlaylistById_Old(String id, final Model.GetPlaylist listener) {
+        DatabaseReference playlistRef = dbRef.child(Constants.PLAYLISTS_COLLECTION).child(id);
+        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Playlist playlist = snapshot.getValue(Playlist.class);
+                Log.d("getPlaylistById", playlist.getAuthor() + " - " + playlist.getTitle());
+                listener.onResult(playlist);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("getPlaylistById", "The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
+    public void getAllPlaylistsAsynch_Old(final Model.GetPlaylistsListener listener) {
         DatabaseReference playlists = dbRef.child(Constants.PLAYLISTS_COLLECTION); // ref to playlists collection
         Query queryRef = playlists.orderByChild("author");
 
@@ -118,35 +215,17 @@ public class ModelFirebase {
         });
     }
 
-    public void getPlaylistById(String id, final Model.GetPlaylist listener) {
-        DatabaseReference playlistRef = dbRef.child(Constants.PLAYLISTS_COLLECTION).child(id);
-        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Playlist playlist = snapshot.getValue(Playlist.class);
-                Log.d("getPlaylistById", playlist.getAuthor() + " - " + playlist.getTitle());
-                listener.onResult(playlist);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("getPlaylistById", "The read failed: " + databaseError.getMessage());
-                listener.onCancel();
-            }
-        });
-    }
-
 
     private void seed() {
         generateData();
-        DatabaseReference playlists = dbRef.child("playlists");
+        DatabaseReference userPlaylists = dbRef.child("users").child(this.getUserId()).child("playlists"); // ref to current user's playlists
         Map<String, Object> childUpdates = new HashMap<>();
 
         for (Playlist playlist : playlistData) {
-            String playlistId = playlists.push().getKey(); // generate key in DB
+            String playlistId = userPlaylists.push().getKey(); // generate key in DB
             playlist.setId(playlistId); // set id to current playlist object based on its DB key
             Map<String, Object> playlistValues = playlist.toMap();
-            childUpdates.put("/playlists/" + playlistId, playlistValues);
+            childUpdates.put("/users/" + getUserId() + "/playlists/" + playlistId , playlistValues);
         }
 
         dbRef.updateChildren(childUpdates);
@@ -154,9 +233,8 @@ public class ModelFirebase {
 
     private void generateData() {
         playlistData = new LinkedList<Playlist>();
-        playlistData.add(new Playlist("Rotem's Playlist","Rotem"));
-        playlistData.add(new Playlist("John's Playlist","John"));
-        playlistData.add(new Playlist("Stas Playlist","Stas"));
+        playlistData.add(new Playlist("Rotem's Playlist 1","Rotem"));
+        playlistData.add(new Playlist("Rotem's Playlist 2","Rotem"));
     }
 
 }

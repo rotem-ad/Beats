@@ -6,4 +6,5 @@ package com.example.rotem.beats;
 public class Constants {
 
     public static final String PLAYLISTS_COLLECTION = "playlists";
+    public static final String USERS_COLLECTION = "users";
 }

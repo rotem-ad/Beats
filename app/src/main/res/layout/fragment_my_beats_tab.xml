@@ -4,10 +4,17 @@
     android:layout_height="match_parent"
     tools:context="com.example.rotem.beats.MyBeatsFragmentTab">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_beats_progressbar"
+        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+        android:indeterminate="true"   />
+
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/title_my_beats_fragment" />
+        android:id="@+id/my_beats_playlist_listview"
+        />
 
 </FrameLayout>
