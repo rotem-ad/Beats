@@ -1,6 +1,7 @@
 package com.example.rotem.beats;
 
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,14 +11,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
+import com.example.rotem.beats.Model.User;
 
 public class SignUpActivity extends AppCompatActivity {
 
     EditText email;
     EditText password;
+    EditText name;
     Button signUpBtn;
     String emailUserInput;
     String pwdUserInput;
+    String nameUserInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void init() {
         email = (EditText) findViewById(R.id.signup_email);
         password = (EditText) findViewById(R.id.signup_password);
+        name = (EditText) findViewById(R.id.signup_name);
         signUpBtn = (Button) findViewById(R.id.signup_signup_btn);
 
         signUpBtn.setOnClickListener(new View.OnClickListener() {
@@ -37,10 +42,17 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 emailUserInput = String.valueOf(email.getText());
                 pwdUserInput = String.valueOf(password.getText());
+                nameUserInput = String.valueOf(name.getText());
 
                 // validate non empty input
                 if  (emailUserInput.isEmpty() || pwdUserInput.isEmpty()) {
                     Toast.makeText(MyApplication.getAppContext(), "Email/Password can't be empty" ,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if  (nameUserInput.isEmpty()) {
+                    Toast.makeText(MyApplication.getAppContext(), "User name can't be empty" ,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -52,6 +64,8 @@ public class SignUpActivity extends AppCompatActivity {
                             Toast.makeText(MyApplication.getAppContext(), "Sign up succeeded" ,
                                     Toast.LENGTH_SHORT).show();
                             Log.d("LoginActivity", "login success");
+
+                            addUserToDB(nameUserInput); // create new user in DB
 
                             // start home activity
                             Intent intent = new Intent(v.getContext(), MainActivity.class);
@@ -67,4 +81,11 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
     } // end init
+
+
+    private void addUserToDB (String userName) {
+        Model model = Model.getInstance();
+        User newUser = new User(model.getUserId(),userName,emailUserInput);
+        model.addUser(newUser);
+    }
 }

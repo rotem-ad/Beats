@@ -81,6 +81,13 @@ public class ModelFirebase {
         }
     }
 
+    public void addUser(User user) {
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> userValues = user.toMap();
+        childUpdates.put("/users/" + user.getId(), userValues);
+        dbRef.updateChildren(childUpdates);
+    }
+
     public void signout() {
         FirebaseAuth.getInstance().signOut();
     }

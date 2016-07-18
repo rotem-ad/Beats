@@ -48,6 +48,10 @@ public class Model {
         modelFirebase.signup( email,  pwd,  listener);
     }
 
+    public void addUser(User user){
+        modelFirebase.addUser(user);
+    }
+
     public String getUserId(){
         return modelFirebase.getUserId();
     }

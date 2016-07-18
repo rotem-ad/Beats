@@ -17,5 +17,6 @@
     <string name="title_my_beats_fragment">My Beats</string>
     <string name="title_activity_my">MyActivity</string>
     <string name="title_activity_playlist_details">Playlist Details</string>
+    <string name="login_name_label">Name:</string>
 
 </resources>
