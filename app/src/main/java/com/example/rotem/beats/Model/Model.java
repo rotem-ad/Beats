@@ -27,6 +27,10 @@ public class Model {
         void onCancel();
     }
 
+    public interface AddPlaylistListener{
+        void onComplete(String result);
+    }
+
     private Model(){
         context = MyApplication.getAppContext();
         modelFirebase = new ModelFirebase();
@@ -73,31 +77,10 @@ public class Model {
     }
 
     public void GetPlaylistById(String id, GetPlaylist listener){
-        modelFirebase.getPlaylistById(id,listener);
+        modelFirebase.getPlaylistById(id, listener);
     }
 
-    /*
-
-    public Playlist getPlaylist(String id){
-        for (Playlist pl:data) {
-            if(pl.getId().equals(id)){
-                return pl;
-            }
-        }
-        return null;
+    public void addPlaylist(Playlist playlist, final Model.AddPlaylistListener listener) {
+        modelFirebase.addPlaylist(playlist, listener);
     }
-
-    public List<Playlist> getAllPlaylists(){
-        return data;
-    }
-
-     public void add(Playlist pl){
-        data.add(pl);
-    }
-
-    public void remove(Playlist pl){
-        data.remove(pl);
-    }
-
-    */
 }

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class MyBeatsFragmentTab extends Fragment {
 
+    Model model;
     ListView list;
     List<Playlist> data;
     MyAdapter adapter;
@@ -36,6 +38,7 @@ public class MyBeatsFragmentTab extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_beats_tab, container, false);
 
+        model = Model.getInstance();
         progressBar = (ProgressBar) rootView.findViewById(R.id.my_beats_progressbar);
         list = (ListView) rootView.findViewById(R.id.my_beats_playlist_listview);
         adapter = new MyAdapter();
@@ -52,20 +55,40 @@ public class MyBeatsFragmentTab extends Fragment {
             }
         });
 
+
+        /*
+        Playlist pl = new Playlist("Rotem Test playlist","Rotem");
+        model.addPlaylist(pl, new Model.AddPlaylistListener() {
+            @Override
+            public void onComplete(String result) {
+                if (result.equals("SUCCESS")) {
+                    Toast.makeText(MyApplication.getAppContext(), "Playlist added successfully" ,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        */
+
         return rootView;
     }
 
 
     void loadPlaylistsData(){
         progressBar.setVisibility(View.VISIBLE);
-        String userId = Model.getInstance().getUserId();
-        Model.getInstance().getPlaylistsByUser(userId, new Model.GetPlaylistsListener() {
+        String userId = model.getUserId();
+        model.getPlaylistsByUser(userId, new Model.GetPlaylistsListener() {
             @Override
             public void onResult(List<Playlist> playlists) {
                 data = playlists;
                 list.setAdapter(adapter); // data must not be null at this point!
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
+                // in case user doesn't have playlists of his own
+                if (playlists.size() == 0) {
+                    Toast.makeText(MyApplication.getAppContext(), "You don't have any playlists" ,
+                            Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

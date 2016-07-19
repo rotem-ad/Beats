@@ -215,6 +215,21 @@ public class ModelFirebase {
         });
     }
 
+    public void addPlaylist (Playlist playlist, final Model.AddPlaylistListener listener) {
+        DatabaseReference userPlaylists = dbRef.child(Constants.USERS_COLLECTION).child(this.getUserId()).child("playlists"); // ref to current user's playlists
+        Map<String, Object> childUpdates = new HashMap<>();
+        String playlistId = userPlaylists.push().getKey(); // generate key in DB
+        playlist.setId(playlistId); // set id to current playlist object based on its DB key
+        Map<String, Object> playlistValues = playlist.toMap();
+        childUpdates.put(playlistId , playlistValues);
+        userPlaylists.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete("SUCCESS");
+            }
+        });
+    }
+
 
     private void seed() {
         generateData();
@@ -233,8 +248,8 @@ public class ModelFirebase {
 
     private void generateData() {
         playlistData = new LinkedList<Playlist>();
-        playlistData.add(new Playlist("Rotem's Playlist 1","Rotem"));
-        playlistData.add(new Playlist("Rotem's Playlist 2","Rotem"));
+        playlistData.add(new Playlist("Stas Playlist 1","Stas"));
+        playlistData.add(new Playlist("Stas Playlist 2","Stas"));
     }
 
 }
