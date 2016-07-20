@@ -7,4 +7,7 @@ public class Constants {
 
     public static final String PLAYLISTS_COLLECTION = "playlists";
     public static final String USERS_COLLECTION = "users";
+
+    public static final int PLAYLIST_DETAILS = 1;
+    public static final int PLAYLIST_NEW = 2;
 }

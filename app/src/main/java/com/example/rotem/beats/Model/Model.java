@@ -27,9 +27,15 @@ public class Model {
         void onCancel();
     }
 
+    public interface GetUserListener{
+        void onResult(String userName);
+        void onCancel();
+    }
+
     public interface AddPlaylistListener{
         void onComplete(String result);
     }
+
 
     private Model(){
         context = MyApplication.getAppContext();
@@ -62,6 +68,10 @@ public class Model {
 
     public String getUserEmail(){
         return modelFirebase.getUserEmail();
+    }
+
+    public void getUserNameById(String userId, final GetUserListener listener) {
+        modelFirebase.getUserNameById(userId, listener);
     }
 
     public void signout(){

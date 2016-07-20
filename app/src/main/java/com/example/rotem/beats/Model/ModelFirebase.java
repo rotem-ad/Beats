@@ -88,6 +88,25 @@ public class ModelFirebase {
         dbRef.updateChildren(childUpdates);
     }
 
+    public void getUserNameById(String userId, final Model.GetUserListener listener) {
+        DatabaseReference userRef = dbRef.child(Constants.USERS_COLLECTION).child(userId); // ref to user
+        Query queryRef = userRef.child("name");
+
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String userName = snapshot.getValue(String.class);
+                listener.onResult(userName);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("getUserById", "The read failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
     public void signout() {
         FirebaseAuth.getInstance().signOut();
     }

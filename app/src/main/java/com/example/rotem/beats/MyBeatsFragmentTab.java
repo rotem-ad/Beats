@@ -1,10 +1,14 @@
 package com.example.rotem.beats;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -51,23 +55,11 @@ public class MyBeatsFragmentTab extends Fragment {
                 String playlistId = data.get(position).getId();
                 Intent intent = new Intent(getActivity(), PlaylistDetailsActivity.class);
                 intent.putExtra("PLAYLIST_ID", playlistId);
-                startActivityForResult(intent,1); // TODO: change 1 to constant
+                startActivityForResult(intent,Constants.PLAYLIST_DETAILS);
             }
         });
 
-
-        /*
-        Playlist pl = new Playlist("Rotem Test playlist","Rotem");
-        model.addPlaylist(pl, new Model.AddPlaylistListener() {
-            @Override
-            public void onComplete(String result) {
-                if (result.equals("SUCCESS")) {
-                    Toast.makeText(MyApplication.getAppContext(), "Playlist added successfully" ,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        */
+        setHasOptionsMenu(true);
 
         return rootView;
     }
@@ -98,6 +90,52 @@ public class MyBeatsFragmentTab extends Fragment {
         });
     }
 
+    public void addNewPlaylist() {
+        Intent intent = new Intent(getActivity(), PlaylistNewActivity.class);
+        startActivityForResult(intent,Constants.PLAYLIST_NEW);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_my_beats, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // Handle item selection
+        switch (id) {
+            case R.id.action_new_playlist:
+                this.addNewPlaylist();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.PLAYLIST_DETAILS) { //TODO: maybe should be removed
+            if(resultCode == Activity.RESULT_OK){
+                loadPlaylistsData();
+            }
+        }
+
+        if (requestCode == Constants.PLAYLIST_NEW) {
+            if(resultCode == Activity.RESULT_OK){
+               loadPlaylistsData();
+            }
+        }
+    }
 
     class MyAdapter extends BaseAdapter {
 
