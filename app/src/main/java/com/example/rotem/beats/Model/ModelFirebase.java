@@ -191,6 +191,37 @@ public class ModelFirebase {
         });
     }
 
+    public void removePlaylistById(final String id, final Model.DelPlaylist listener) {
+        final DatabaseReference playlistsRef = dbRef.child(Constants.USERS_COLLECTION).child(this.getUserId())
+                .child(Constants.PLAYLISTS_COLLECTION); // ref to user's playlists
+        playlistsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot plSnapshot : snapshot.getChildren()) { // for each playlist in collection
+                        if (plSnapshot.getKey().equals(id)) { // check if playlist is found
+                            Log.d("removePlaylistById", "removing playlist with id " + plSnapshot.getKey());
+                            // remove the playlist from DB
+                            plSnapshot.getRef().removeValue(new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    listener.onComplete("SUCCESS");
+                                }
+                            });
+                            return;
+                        }
+                }
+                listener.onComplete(null); // playlist id was not found
+                return;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("removePlaylistById", "Deletion failed: " + databaseError.getMessage());
+                listener.onCancel();
+            }
+        });
+    }
+
     public void getPlaylistById_Old(String id, final Model.GetPlaylist listener) {
         DatabaseReference playlistRef = dbRef.child(Constants.PLAYLISTS_COLLECTION).child(id);
         playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {

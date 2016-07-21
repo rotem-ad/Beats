@@ -29,6 +29,11 @@ public class Model {
         void onCancel();
     }
 
+    public interface DelPlaylist{
+        void onComplete(String result);
+        void onCancel();
+    }
+
     public interface GetUserListener{
         void onResult(String userName);
         void onCancel();
@@ -99,6 +104,10 @@ public class Model {
 
     public void GetPlaylistById(String id, GetPlaylist listener){
         modelFirebase.getPlaylistById(id, listener);
+    }
+
+    public void removePlaylistById(String id, DelPlaylist listener){
+        modelFirebase.removePlaylistById(id, listener);
     }
 
     public void addPlaylist(Playlist playlist, final Model.AddPlaylistListener listener) {

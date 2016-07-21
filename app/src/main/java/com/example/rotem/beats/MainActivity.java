@@ -6,7 +6,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.rotem.beats.Model.Model;
+
 public class MainActivity extends AppCompatActivity {
+
+    Model model = Model.getInstance();
 
     // Declaring our tabs and the corresponding fragments.
     ActionBar.Tab homeTab, myBeatsTab;
@@ -41,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
         // Adding tabs to the ActionBar.
         actionBar.addTab(homeTab);
         actionBar.addTab(myBeatsTab);
+
+        // Get current user
+        model.getUserNameById(model.getUserId(), new Model.GetUserListener() {
+            @Override
+            public void onResult(String userName) {
+                MyApplication.setCurrentUser(userName);
+            }
+
+            @Override
+            public void onCancel() {}
+        });
     }
 
     public class TabListener implements ActionBar.TabListener {
