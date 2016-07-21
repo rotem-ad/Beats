@@ -1,6 +1,7 @@
 package com.example.rotem.beats.Model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.example.rotem.beats.MyApplication;
 
@@ -14,7 +15,8 @@ public class Model {
     private final static Model instance = new Model();
     Context context;
     ModelFirebase modelFirebase;
-    //ModelCoulinary modelCloudinary;
+    ModelCloudinary modelCloudinary;
+
     //ModelSql modelSql;
 
     public interface GetPlaylistsListener{
@@ -37,10 +39,19 @@ public class Model {
     }
 
 
+    public interface SaveImageListener{
+        public void onDone();
+    }
+
+    public interface GetImageListener{
+        public void onDone(Bitmap image, String imageName);
+    }
+
+
     private Model(){
         context = MyApplication.getAppContext();
         modelFirebase = new ModelFirebase();
-        //modelCloudinary = new ModelCoulinary();
+        modelCloudinary = new ModelCloudinary();
         //modelSql = new ModelSql(MyApplication.getAppContext());
     }
 
@@ -93,4 +104,28 @@ public class Model {
     public void addPlaylist(Playlist playlist, final Model.AddPlaylistListener listener) {
         modelFirebase.addPlaylist(playlist, listener);
     }
+
+    public void saveImage(final Bitmap image, final String imageName, final SaveImageListener listener){
+        Thread t = new Thread(){
+            public void run(){
+                modelCloudinary.saveImage(image, imageName, listener);
+            }
+        };
+    }
+
+
+    public void getImage(String imageName, GetImageListener listener){
+        modelCloudinary.getImage(imageName, listener);
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

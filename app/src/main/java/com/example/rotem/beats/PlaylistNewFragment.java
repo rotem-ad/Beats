@@ -3,13 +3,17 @@ package com.example.rotem.beats;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
@@ -26,7 +30,7 @@ public class PlaylistNewFragment extends Fragment {
     String author;
     Button saveBtn;
     Button cancelBtn;
-
+    ImageButton addButton;
 
     public PlaylistNewFragment() {
         // Required empty public constructor
@@ -38,6 +42,23 @@ public class PlaylistNewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_playlist_new, container, false);
+
+//        addButton = (ImageButton) addButton.findViewById(R.id.playlist_button_add);
+//        addButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.image02);
+//                Model.getInstance().saveImage(image, "image02.jpg", new Model.SaveImageListener() {
+//                    @Override
+//                    public void onDone() {
+//                        Log.d("TAG", "save image finished");
+//                    }
+//                });
+//            }
+//        });
+
+
         init(rootView);
         return rootView;
     }
