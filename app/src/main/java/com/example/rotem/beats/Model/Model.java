@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 
 import com.example.rotem.beats.MyApplication;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -41,11 +40,6 @@ public class Model {
 
     public interface AddPlaylistListener{
         void onComplete(String result);
-    }
-
-
-    public interface SaveImageListener{
-        public void onDone();
     }
 
     public interface GetImageListener{
@@ -114,14 +108,19 @@ public class Model {
         modelFirebase.addPlaylist(playlist, listener);
     }
 
-    public void saveImage(final Bitmap image, final String imageName, final SaveImageListener listener){
-        Thread t = new Thread(){
-            public void run(){
-                modelCloudinary.saveImage(image, imageName, listener);
-            }
-        };
-    }
 
+    public void saveImage(final Bitmap imageBitmap, final String imageName) {
+        // synchronously save image locally
+        //saveImageToFile(imageBitmap,imageName);
+        // asynchronously save image to cloudinary
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                modelCloudinary.saveImage(imageBitmap,imageName);
+            }
+        });
+        thread.start();
+    }
 
     public void getImage(String imageName, GetImageListener listener){
         modelCloudinary.getImage(imageName, listener);

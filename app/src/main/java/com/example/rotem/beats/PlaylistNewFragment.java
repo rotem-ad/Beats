@@ -24,7 +24,7 @@ import com.example.rotem.beats.Model.Playlist;
  */
 public class PlaylistNewFragment extends Fragment {
 
-    Model model;
+    Model model = Model.getInstance();
     EditText title;
     EditText tags;
     String author;
@@ -43,30 +43,23 @@ public class PlaylistNewFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_playlist_new, container, false);
 
-//        addButton = (ImageButton) addButton.findViewById(R.id.playlist_button_add);
+        init(rootView);
+
+//        addButton = (ImageButton) rootView.findViewById(R.id.playlist_button_add);
 //        addButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//
 //                Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.image02);
-//                Model.getInstance().saveImage(image, "image02.jpg", new Model.SaveImageListener() {
-//                    @Override
-//                    public void onDone() {
-//                        Log.d("TAG", "save image finished");
-//                    }
-//                });
+//                model.saveImage(image,"aman_patuy.jpg");
+//
 //            }
 //        });
 
-
-        init(rootView);
         return rootView;
     }
 
 
     private void init(View view) {
-
-        model = Model.getInstance();
         saveBtn = (Button) view.findViewById(R.id.playlist_new_save);
         cancelBtn = (Button) view.findViewById(R.id.playlist_new_cancel);
         title = (EditText) view.findViewById(R.id.playlist_new_title);
