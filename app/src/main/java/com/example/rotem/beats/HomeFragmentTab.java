@@ -1,14 +1,20 @@
 package com.example.rotem.beats;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -26,6 +32,8 @@ public class HomeFragmentTab extends Fragment {
     List<Playlist> data;
     MyAdapter adapter;
     ProgressBar progressBar;
+    String searchTag;
+    String searchAuthor;
 
     public HomeFragmentTab() {
         // Required empty public constructor
@@ -54,6 +62,8 @@ public class HomeFragmentTab extends Fragment {
             }
         });
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 
@@ -75,6 +85,85 @@ public class HomeFragmentTab extends Fragment {
 
             }
         });
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // Handle item selection
+        switch (id) {
+            case R.id.action_seach_playlist:
+                this.searchPlaylists();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void searchPlaylists() {
+
+        // get dialog_search_playlits.xml view
+        LayoutInflater li = LayoutInflater.from(getContext());
+        View promptsView = li.inflate(R.layout.dialog_search_playlits, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setView(promptsView); // set dialog_search_playlits.xml to alertdialog builder
+
+        final EditText tagUserInput = (EditText) promptsView.findViewById(R.id.search_by_tag);
+        final EditText authorUserInput = (EditText) promptsView.findViewById(R.id.search_by_author);
+
+        // set dialog message
+        alertDialogBuilder
+                .setTitle(R.string.action_search_playlist)
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // get user input
+                                searchTag = tagUserInput.getText().toString();
+                                searchAuthor = authorUserInput.getText().toString();
+
+                                // in case both search fields are empty, do nothing
+                                if (searchTag.isEmpty() && searchAuthor.isEmpty()) {
+                                    return;
+                                }
+
+                                progressBar.setVisibility(View.VISIBLE);
+                                Model.getInstance().findPlaylists(searchTag,searchAuthor,new Model.GetPlaylistsListener() {
+                                    @Override
+                                    public void onResult(List<Playlist> playlists) {
+                                        data = playlists;
+                                        list.setAdapter(adapter); // data must not be null at this point!
+                                        adapter.notifyDataSetChanged();
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+
+                                    @Override
+                                    public void onCancel() {
+
+                                    }
+                                });
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
 

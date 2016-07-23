@@ -96,6 +96,10 @@ public class Model {
         modelFirebase.getPlaylistsByUser(userId, listener);
     }
 
+    public void findPlaylists(String tag, String author, final GetPlaylistsListener listener) {
+        modelFirebase.findPlaylists(tag, author, listener);
+    }
+
     public void GetPlaylistById(String id, GetPlaylist listener){
         modelFirebase.getPlaylistById(id, listener);
     }

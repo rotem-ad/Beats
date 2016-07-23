@@ -22,5 +22,6 @@
     <string name="title_activity_playlist_edit">Edit Playlist</string>
     <string name="action_new_playlist">New Playlist</string>
     <string name="action_del_playlist">Delete Playlist</string>
+    <string name="action_search_playlist">Search Playlist</string>
 
 </resources>
