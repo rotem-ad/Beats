@@ -24,6 +24,7 @@ public class PlaylistDetailsFragment extends Fragment {
 
     Model model = Model.getInstance();
     TextView title;
+    TextView tags;
     TextView author;
     TextView rating;
     TextView createDate;
@@ -50,6 +51,7 @@ public class PlaylistDetailsFragment extends Fragment {
 
     private void init(View view) {
         title = (TextView) view.findViewById(R.id.playlist_details_title);
+        tags = (TextView) view.findViewById(R.id.playlist_details_tags);
         author = (TextView) view.findViewById(R.id.playlist_details_author);
         rating = (TextView) view.findViewById(R.id.playlist_details_rating);
         createDate = (TextView) view.findViewById(R.id.playlist_details_cdate);
@@ -64,6 +66,14 @@ public class PlaylistDetailsFragment extends Fragment {
                     author.setText(playlist.getAuthor());
                     rating.setText(Integer.toString( playlist.getRating() ));
                     createDate.setText(playlist.getCreationDate());
+
+                    String tagList = "";
+                    if (playlist.getTags() != null) {
+                        for (String tag: playlist.getTags() ) {
+                            tagList = tagList + tag + " ";
+                        }
+                        tags.setText(tagList); // populate tags text view
+                    }
 
                     // Display options menu only if current user is owner of this playlist
                     if (currentUser.equals(playlist.getAuthor())) {

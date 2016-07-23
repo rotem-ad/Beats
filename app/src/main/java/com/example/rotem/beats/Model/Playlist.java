@@ -5,6 +5,7 @@ import com.google.firebase.database.Exclude;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +27,13 @@ public class Playlist {
     }
 
     public Playlist(String title, String author) {
+        tags = new LinkedList<>();
+        songList = new LinkedList<>();
         setTitle(title);
         setAuthor(author);
         // set current date as creation date
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = df.format(Calendar.getInstance().getTime());
-        setCreationDate(formattedDate);
+        setCreationDate(this.getCurrentDate());
         setPhoto(null);
-        setTags(null);
-        setSongList(null);
         setRating(0);
         setId(null);
     }
@@ -116,5 +115,11 @@ public class Playlist {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    private String getCurrentDate() {
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(Calendar.getInstance().getTime());
+        return formattedDate;
     }
 }
