@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,10 +45,17 @@ public class PlaylistNewFragment extends Fragment {
     Button cancelBtn;
     Playlist playlist;
 
+    /************ Change Photo Variables ************/
     private Uri imageCaptureUri;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     ImageButton btn_choose_image;
+    private ImageView tempImage;
+    private ImageView image;
+
+    /***********************************************/
+
+
 
 
     public PlaylistNewFragment() {
@@ -64,6 +72,8 @@ public class PlaylistNewFragment extends Fragment {
 
 
 
+
+        /****************************** Change Photo Process - Start *******************************/
         final String [] items = new String[]{"From Camera", "From Gallery"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -102,8 +112,7 @@ public class PlaylistNewFragment extends Fragment {
                 dialog.show();
             }
         });
-
-
+        /******************************* Change Photo Process - End *****************************************/
 
 
 
@@ -235,12 +244,15 @@ public class PlaylistNewFragment extends Fragment {
             path =  imageCaptureUri.getPath();
             bitmap = BitmapFactory.decodeFile(path);
         }
+
         /*
         *   Now the bitmap variable holds the photo we've been selected
         *   either by choosing it from the gallery or photo which has been taken by camera.
         *   Now we need to start manipulate it.
          */
 
+        image = (ImageView) getActivity().findViewById(R.id.playlist_list_row_image);
+        image.setImageBitmap(bitmap);
     }
 
     public String getRealPathFromUri(Uri contentURI){

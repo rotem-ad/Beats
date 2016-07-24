@@ -31,6 +31,7 @@ public class PlaylistDetailsFragment extends Fragment {
     ProgressBar progressBar;
     String playlistId;
     String currentUser = MyApplication.getCurrentUser();
+
     
     boolean modified;
 
