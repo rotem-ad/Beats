@@ -235,7 +235,11 @@ public class PlaylistNewFragment extends Fragment {
             path =  imageCaptureUri.getPath();
             bitmap = BitmapFactory.decodeFile(path);
         }
-
+        /*
+        *   Now the bitmap variable holds the photo we've been selected
+        *   either by choosing it from the gallery or photo which has been taken by camera.
+        *   Now we need to start manipulate it.
+         */
 
     }
 
