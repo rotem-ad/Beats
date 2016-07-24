@@ -278,6 +278,16 @@ public class ModelFirebase {
 
     public void addPlaylist (Playlist playlist, final Model.AddPlaylistListener listener) {
         DatabaseReference userPlaylists = dbRef.child(Constants.USERS_COLLECTION).child(this.getUserId()).child("playlists"); // ref to current user's playlists
+        String playlistId = userPlaylists.push().getKey(); // generate key in DB
+        playlist.setId(playlistId); // set id to current playlist object based on its DB key
+        userPlaylists.child(playlistId).setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete("SUCCESS");
+            }
+        });
+
+        /*
         Map<String, Object> childUpdates = new HashMap<>();
         String playlistId = userPlaylists.push().getKey(); // generate key in DB
         playlist.setId(playlistId); // set id to current playlist object based on its DB key
@@ -289,6 +299,7 @@ public class ModelFirebase {
                 listener.onComplete("SUCCESS");
             }
         });
+        */
     }
 
 

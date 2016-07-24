@@ -15,12 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+import com.example.rotem.beats.Model.Song;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +33,8 @@ import com.example.rotem.beats.Model.Playlist;
 public class PlaylistDetailsFragment extends Fragment {
 
     Model model = Model.getInstance();
+    ListView songsList;
+    SongListAdapter adapter;
     ImageView image;
     TextView title;
     TextView tags;
@@ -56,7 +63,7 @@ public class PlaylistDetailsFragment extends Fragment {
         return rootView;
     }
 
-    private void init(View view) {
+    private void init(final View view) {
         image = (ImageView) view.findViewById(R.id.playlist_details_image);
         title = (TextView) view.findViewById(R.id.playlist_details_title);
         tags = (TextView) view.findViewById(R.id.playlist_details_tags);
@@ -64,19 +71,31 @@ public class PlaylistDetailsFragment extends Fragment {
         rating = (TextView) view.findViewById(R.id.playlist_details_rating);
         createDate = (TextView) view.findViewById(R.id.playlist_details_cdate);
         progressBar = (ProgressBar) view.findViewById(R.id.playlist_details_progressbar);
+        songsList = (ListView) view.findViewById(R.id.playlist_details_songs_listview);
 
         progressBar.setVisibility(View.VISIBLE);
         Model.getInstance().GetPlaylistById(this.playlistId, new Model.GetPlaylist() {
             @Override
             public void onResult(final Playlist playlist) {
                 if (playlist != null) {
+                    // Display options menu only if current user is owner of this playlist
+                    if (currentUser.equals(playlist.getAuthor())) {
+                        setHasOptionsMenu(true);
+                    }
+
                     if (playlist.getPhoto() != null) {
                         image.setImageBitmap( BitmapFactory.decodeFile(playlist.getPhoto()) );
                     }
+
                     title.setText(playlist.getTitle());
                     author.setText(playlist.getAuthor());
                     rating.setText(Integer.toString( playlist.getRating() ));
                     createDate.setText(playlist.getCreationDate());
+
+                    if (playlist.getSongList() != null) { // there is at least 1 song
+                        adapter = new SongListAdapter(getActivity(), playlist.getSongList()); // populate songs list
+                        songsList.setAdapter(adapter);
+                    }
 
                     String tagList = "";
                     if (playlist.getTags() != null) {
@@ -86,10 +105,7 @@ public class PlaylistDetailsFragment extends Fragment {
                         tags.setText(tagList); // populate tags text view
                     }
 
-                    // Display options menu only if current user is owner of this playlist
-                    if (currentUser.equals(playlist.getAuthor())) {
-                        setHasOptionsMenu(true);
-                    }
+
                 }
                 progressBar.setVisibility(View.GONE);
             }
@@ -99,17 +115,6 @@ public class PlaylistDetailsFragment extends Fragment {
 
             }
         });
-
-
-        Button playBtn = (Button) view.findViewById(R.id.playlist_details_play);
-
-        playBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playOnYouTube("Linkin Park in the end");
-            }
-        });
-
     }
 
     public boolean isModified() {

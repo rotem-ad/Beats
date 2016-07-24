@@ -120,12 +120,24 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/playlist_details_play"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Play on YouTube"/>
+            android:orientation="vertical"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Songs: "
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/playlist_details_songs_listview" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

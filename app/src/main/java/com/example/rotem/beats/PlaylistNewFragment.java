@@ -13,16 +13,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +30,7 @@ import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,11 +40,14 @@ public class PlaylistNewFragment extends Fragment {
 
     Model model = Model.getInstance();
     List<Song> data;
+    ListView songsList;
+    SongListAdapter adapter;
     ImageView image;
     EditText title;
     TextView tags;
     String author;
     Button addTagBtn;
+    Button addSongBtn;
     Button saveBtn;
     Button cancelBtn;
     Playlist playlist;
@@ -66,6 +69,10 @@ public class PlaylistNewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_playlist_new, container, false);
+
+        songsList = (ListView) rootView.findViewById(R.id.playlist_new_songs_listview);
+        data = new LinkedList<>();
+        adapter = new SongListAdapter(getActivity(),data);
 
         init(rootView);
 
@@ -125,6 +132,7 @@ public class PlaylistNewFragment extends Fragment {
 
     private void init(View view) {
         btn_choose_image = (ImageButton) view.findViewById(R.id.playlist_button_change_photo);
+        addSongBtn = (Button) view.findViewById(R.id.playlist_new_add_song);
         addTagBtn = (Button) view.findViewById(R.id.playlist_new_add_tag);
         saveBtn = (Button) view.findViewById(R.id.playlist_new_save);
         cancelBtn = (Button) view.findViewById(R.id.playlist_new_cancel);
@@ -178,6 +186,14 @@ public class PlaylistNewFragment extends Fragment {
             }
         });
 
+        addSongBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAddSongDialog();
+            }
+        });
+
+
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,7 +209,7 @@ public class PlaylistNewFragment extends Fragment {
                 String titleUserInput = String.valueOf(title.getText());
                 playlist.setTitle(titleUserInput);
                 playlist.setAuthor(author);
-                //TODO: songs
+                playlist.setSongList(data); // attach all songs to playlist
                 model.addPlaylist(playlist, new Model.AddPlaylistListener() { // add new playlist to DB
                     @Override
                     public void onComplete(String result) {
@@ -255,45 +271,53 @@ public class PlaylistNewFragment extends Fragment {
         return cursor.getString(column_index);
     }
 
-    class MyAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return data.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return data.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView,
-                            ViewGroup parent) {
-            if(convertView == null){
-                LayoutInflater inflater = LayoutInflater.from(getActivity());;
-                convertView = inflater.inflate(R.layout.songs_list_view_row, null);
-                Log.d("songs_list_view", "create view:" + position);
-            }else{
-                Log.d("songs_list_view", "use convert view:" + position);
-            }
-
-            TextView title = (TextView) convertView.findViewById(R.id.song_list_row_title);
-            TextView artist = (TextView) convertView.findViewById(R.id.song_list_row_artist);
-            //Button playBtn = (Button) convertView.findViewById(R.id.song_list_row_play_btn);
-
-            Song song = data.get(position);
-
-            title.setText(song.getTitle());
-            artist.setText("by " + song.getArtist());
-
-            return convertView;
-        }
+    private void loadSongsData(){
+        songsList.setAdapter(adapter); // data must not be null at this point!
+        adapter.notifyDataSetChanged();
     }
 
+    private void addSong(String artist, String title) {
+        Song song = new Song();
+        song.setArtist(artist);
+        song.setTitle(title);
+        String songId = String.valueOf(data.size());
+        song.setId(songId);
+        data.add(song); // add song to list
+    }
+
+    private void openAddSongDialog() {
+        // get dialog_add_song.xml view
+        LayoutInflater li = LayoutInflater.from(getContext());
+        View promptsView = li.inflate(R.layout.dialog_add_song, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setView(promptsView); // set dialog_add_song.xml to alertdialog builder
+
+        final EditText artistUserInput = (EditText) promptsView.findViewById(R.id.add_song_artist);
+        final EditText titleUserInput = (EditText) promptsView.findViewById(R.id.add_song_title);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(true)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // get user input and add song to list
+                                addSong(artistUserInput.getText().toString(),titleUserInput.getText().toString());
+                                loadSongsData();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
 }

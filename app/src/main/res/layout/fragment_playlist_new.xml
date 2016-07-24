@@ -85,19 +85,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="10dp">
+            android:paddingBottom="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Songs: "
                 android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <Button
+                android:id="@+id/playlist_new_add_song"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Add Song"/>
         </LinearLayout>
-
-
-
-
-
 
     </LinearLayout>
 

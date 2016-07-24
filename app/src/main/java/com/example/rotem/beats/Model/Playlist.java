@@ -28,7 +28,7 @@ public class Playlist {
 
     public Playlist(String title, String author) {
         tags = new LinkedList<>();
-        songList = new LinkedList<>();
+        songList = new LinkedList<Song>();
         setTitle(title);
         setAuthor(author);
         // set current date as creation date
