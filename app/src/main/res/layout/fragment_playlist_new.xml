@@ -22,7 +22,7 @@
                 android:layout_height="50dp"
                 android:src="@drawable/beats2" />
             <ImageButton
-                android:id="@+id/playlist_button_add"
+                android:id="@+id/playlist_button_change_photo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/plus3"

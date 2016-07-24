@@ -5,22 +5,30 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+
+import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +44,12 @@ public class PlaylistNewFragment extends Fragment {
     Button cancelBtn;
     Playlist playlist;
 
+    private Uri imageCaptureUri;
+    private static final int PICK_FROM_CAMERA = 1;
+    private static final int PICK_FROM_FILE = 2;
+    ImageButton btn_choose_image;
+
+
     public PlaylistNewFragment() {
         // Required empty public constructor
     }
@@ -45,7 +59,54 @@ public class PlaylistNewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_playlist_new, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_playlist_new, container, false);
+
+
+
+
+        final String [] items = new String[]{"From Camera", "From Gallery"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Select Image");
+        final AlertDialog.Builder builder1 = builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File file = new File(Environment.getExternalStorageDirectory(), "tmp_avater" + String.valueOf(System.currentTimeMillis()) + ".jpg");
+                    imageCaptureUri = Uri.fromFile(file);
+                    try {
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri);
+                        intent.putExtra("return data", true);
+
+                        startActivityForResult(intent, PICK_FROM_CAMERA);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    dialog.cancel();
+                } else {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Complete action using"), PICK_FROM_FILE);
+
+
+                }
+            }
+        });
+        final AlertDialog dialog = builder.create();
+        btn_choose_image = (ImageButton) rootView.findViewById(R.id.playlist_button_change_photo);
+        btn_choose_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
+            }
+        });
+
+
+
+
+
 
         init(rootView);
 
@@ -70,6 +131,9 @@ public class PlaylistNewFragment extends Fragment {
         title = (EditText) view.findViewById(R.id.playlist_new_title);
         tags = (TextView) view.findViewById(R.id.playlist_new_tags);
         author = MyApplication.getCurrentUser();
+
+
+
 
         playlist = new Playlist(null,null);  // create new playlist object
 
@@ -150,5 +214,46 @@ public class PlaylistNewFragment extends Fragment {
 
 
     }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != getActivity().RESULT_OK)
+            return;
+        Bitmap bitmap = null;
+        String path = "";
+        if(requestCode == PICK_FROM_FILE){
+            imageCaptureUri = data.getData();
+            path = getRealPathFromUri(imageCaptureUri);
+            if(path == null)
+                path = imageCaptureUri.getPath();
+            if(path != null)
+                bitmap = BitmapFactory.decodeFile(path);
+        }else{
+            path =  imageCaptureUri.getPath();
+            bitmap = BitmapFactory.decodeFile(path);
+        }
+
+
+    }
+
+    public String getRealPathFromUri(Uri contentURI){
+        String [] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().managedQuery(contentURI, proj, null, null, null);
+        if(cursor == null)
+            return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+
+
+    }
+
+
+
+
+
 
 }
