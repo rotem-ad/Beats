@@ -24,7 +24,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:id="@+id/playlist_list_row_image"
+                android:id="@+id/playlist_details_image"
                 android:src="@drawable/beats2"
                 />
         </LinearLayout>
@@ -119,6 +119,13 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/playlist_details_play"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Play on YouTube"/>
 
     </LinearLayout>
 

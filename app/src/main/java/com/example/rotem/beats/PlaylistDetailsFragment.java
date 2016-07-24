@@ -2,14 +2,19 @@ package com.example.rotem.beats;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +28,7 @@ import com.example.rotem.beats.Model.Playlist;
 public class PlaylistDetailsFragment extends Fragment {
 
     Model model = Model.getInstance();
+    ImageView image;
     TextView title;
     TextView tags;
     TextView author;
@@ -51,6 +57,7 @@ public class PlaylistDetailsFragment extends Fragment {
     }
 
     private void init(View view) {
+        image = (ImageView) view.findViewById(R.id.playlist_details_image);
         title = (TextView) view.findViewById(R.id.playlist_details_title);
         tags = (TextView) view.findViewById(R.id.playlist_details_tags);
         author = (TextView) view.findViewById(R.id.playlist_details_author);
@@ -63,6 +70,9 @@ public class PlaylistDetailsFragment extends Fragment {
             @Override
             public void onResult(final Playlist playlist) {
                 if (playlist != null) {
+                    if (playlist.getPhoto() != null) {
+                        image.setImageBitmap( BitmapFactory.decodeFile(playlist.getPhoto()) );
+                    }
                     title.setText(playlist.getTitle());
                     author.setText(playlist.getAuthor());
                     rating.setText(Integer.toString( playlist.getRating() ));
@@ -89,6 +99,17 @@ public class PlaylistDetailsFragment extends Fragment {
 
             }
         });
+
+
+        Button playBtn = (Button) view.findViewById(R.id.playlist_details_play);
+
+        playBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playOnYouTube("Linkin Park in the end");
+            }
+        });
+
     }
 
     public boolean isModified() {
@@ -142,6 +163,16 @@ public class PlaylistDetailsFragment extends Fragment {
         });
 
 
+    }
+
+    private void playOnYouTube(String searchText) {
+        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=Hxy8BZGQ5Jo")));
+        //Log.i("Video", "Video Playing....");
+        Intent intent = new Intent(Intent.ACTION_SEARCH);
+        intent.setPackage(Constants.LOCAL_YOUTUBE_APP);
+        intent.putExtra("query", searchText);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /*

@@ -5,6 +5,8 @@ package com.example.rotem.beats;
  */
 public class Constants {
 
+    public static final String LOCAL_YOUTUBE_APP = "com.google.android.youtube";
+
     public static final String PLAYLISTS_COLLECTION = "playlists";
     public static final String USERS_COLLECTION = "users";
 

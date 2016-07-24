@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,8 +28,10 @@ import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+import com.example.rotem.beats.Model.Song;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +39,8 @@ import java.io.File;
 public class PlaylistNewFragment extends Fragment {
 
     Model model = Model.getInstance();
+    List<Song> data;
+    ImageView image;
     EditText title;
     TextView tags;
     String author;
@@ -50,13 +54,7 @@ public class PlaylistNewFragment extends Fragment {
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     ImageButton btn_choose_image;
-    private ImageView tempImage;
-    private ImageView image;
-
     /***********************************************/
-
-
-
 
     public PlaylistNewFragment() {
         // Required empty public constructor
@@ -69,8 +67,7 @@ public class PlaylistNewFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_playlist_new, container, false);
 
-
-
+        init(rootView);
 
 
         /****************************** Change Photo Process - Start *******************************/
@@ -78,7 +75,7 @@ public class PlaylistNewFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Select Image");
-        final AlertDialog.Builder builder1 = builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
@@ -99,13 +96,11 @@ public class PlaylistNewFragment extends Fragment {
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(intent, "Complete action using"), PICK_FROM_FILE);
-
-
                 }
             }
         });
         final AlertDialog dialog = builder.create();
-        btn_choose_image = (ImageButton) rootView.findViewById(R.id.playlist_button_change_photo);
+
         btn_choose_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,11 +108,6 @@ public class PlaylistNewFragment extends Fragment {
             }
         });
         /******************************* Change Photo Process - End *****************************************/
-
-
-
-
-        init(rootView);
 
 //        addButton = (ImageButton) rootView.findViewById(R.id.playlist_button_add);
 //        addButton.setOnClickListener(new View.OnClickListener() {
@@ -134,15 +124,14 @@ public class PlaylistNewFragment extends Fragment {
 
 
     private void init(View view) {
+        btn_choose_image = (ImageButton) view.findViewById(R.id.playlist_button_change_photo);
         addTagBtn = (Button) view.findViewById(R.id.playlist_new_add_tag);
         saveBtn = (Button) view.findViewById(R.id.playlist_new_save);
         cancelBtn = (Button) view.findViewById(R.id.playlist_new_cancel);
+        image = (ImageView) view.findViewById(R.id.playlist_new_image);
         title = (EditText) view.findViewById(R.id.playlist_new_title);
         tags = (TextView) view.findViewById(R.id.playlist_new_tags);
         author = MyApplication.getCurrentUser();
-
-
-
 
         playlist = new Playlist(null,null);  // create new playlist object
 
@@ -221,7 +210,6 @@ public class PlaylistNewFragment extends Fragment {
             }
         });
 
-
     }
 
 
@@ -229,10 +217,10 @@ public class PlaylistNewFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode != getActivity().RESULT_OK)
+        if(resultCode != Activity.RESULT_OK)
             return;
         Bitmap bitmap = null;
-        String path = "";
+        String path;
         if(requestCode == PICK_FROM_FILE){
             imageCaptureUri = data.getData();
             path = getRealPathFromUri(imageCaptureUri);
@@ -251,8 +239,10 @@ public class PlaylistNewFragment extends Fragment {
         *   Now we need to start manipulate it.
          */
 
-        image = (ImageView) getActivity().findViewById(R.id.playlist_list_row_image);
-        image.setImageBitmap(bitmap);
+        if (bitmap != null) {
+            playlist.setPhoto(path);
+            image.setImageBitmap(bitmap);
+        }
     }
 
     public String getRealPathFromUri(Uri contentURI){
@@ -263,13 +253,47 @@ public class PlaylistNewFragment extends Fragment {
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
-
-
     }
 
+    class MyAdapter extends BaseAdapter {
 
+        @Override
+        public int getCount() {
+            return data.size();
+        }
 
+        @Override
+        public Object getItem(int position) {
+            return data.get(position);
+        }
 
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
+        @Override
+        public View getView(int position, View convertView,
+                            ViewGroup parent) {
+            if(convertView == null){
+                LayoutInflater inflater = LayoutInflater.from(getActivity());;
+                convertView = inflater.inflate(R.layout.songs_list_view_row, null);
+                Log.d("songs_list_view", "create view:" + position);
+            }else{
+                Log.d("songs_list_view", "use convert view:" + position);
+            }
+
+            TextView title = (TextView) convertView.findViewById(R.id.song_list_row_title);
+            TextView artist = (TextView) convertView.findViewById(R.id.song_list_row_artist);
+            //Button playBtn = (Button) convertView.findViewById(R.id.song_list_row_play_btn);
+
+            Song song = data.get(position);
+
+            title.setText(song.getTitle());
+            artist.setText("by " + song.getArtist());
+
+            return convertView;
+        }
+    }
 
 }
