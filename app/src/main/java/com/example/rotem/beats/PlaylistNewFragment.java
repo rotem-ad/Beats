@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -229,7 +230,7 @@ public class PlaylistNewFragment extends Fragment {
     }
 
 
-
+/****************************** Change Photo onActivity Result *************************************/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -255,10 +256,18 @@ public class PlaylistNewFragment extends Fragment {
         *   Now we need to start manipulate it.
          */
 
-        if (bitmap != null) {
-            playlist.setPhoto(path);
-            image.setImageBitmap(bitmap);
-        }
+        Bitmap rotated;
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        rotated = Bitmap.createBitmap(bitmap, 0, 0,
+                bitmap.getWidth(), bitmap.getHeight(),
+                matrix, true);
+
+
+        playlist.setPhoto(imageCaptureUri.getPath());
+        image.setImageBitmap(rotated);
+
     }
 
     public String getRealPathFromUri(Uri contentURI){

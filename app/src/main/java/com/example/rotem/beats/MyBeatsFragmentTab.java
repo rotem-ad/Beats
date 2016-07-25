@@ -1,6 +1,8 @@
 package com.example.rotem.beats;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 
+import java.text.FieldPosition;
 import java.util.List;
 
 public class MyBeatsFragmentTab extends Fragment {
@@ -31,6 +34,8 @@ public class MyBeatsFragmentTab extends Fragment {
     List<Playlist> data;
     MyAdapter adapter;
     ProgressBar progressBar;
+
+
 
     public MyBeatsFragmentTab() {
         // Required empty public constructor
@@ -58,6 +63,45 @@ public class MyBeatsFragmentTab extends Fragment {
                 startActivityForResult(intent,Constants.PLAYLIST_DETAILS);
             }
         });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int pos, long id) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Delete Playlist")
+                        .setMessage("Are you sure you want to delete this playlist?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String playlistId = data.get(pos).getId();
+                                model.removePlaylistById(playlistId, new Model.DelPlaylist() {
+                                    @Override
+                                    public void onComplete(String result) {
+                                        loadPlaylistsData();
+                                        Log.d("MyBeatsFragTab ","LongClick");
+                                    }
+
+                                    @Override
+                                    public void onCancel() {
+
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                Log.v("long clicked","pos: " + pos);
+
+                return true;
+            }
+        });
+
+
+
 
         setHasOptionsMenu(true);
 
@@ -160,6 +204,7 @@ public class MyBeatsFragmentTab extends Fragment {
             if(convertView == null){
                 LayoutInflater inflater = LayoutInflater.from(getActivity());;
                 convertView = inflater.inflate(R.layout.fragment_home_playlists_list_row, null);
+
                 Log.d("TAG", "create view:" + position);
             }else{
                 Log.d("TAG", "use convert view:" + position);
@@ -169,10 +214,13 @@ public class MyBeatsFragmentTab extends Fragment {
             TextView author = (TextView) convertView.findViewById(R.id.playlist_list_row_author);
             ImageView image = (ImageView) convertView.findViewById(R.id.playlist_list_row_image);
 
+
             Playlist playlist = data.get(position);
 
             title.setText(playlist.getTitle());
             author.setText("by " + playlist.getAuthor() + " at " + playlist.getCreationDate());
+
+
 
             return convertView;
         }

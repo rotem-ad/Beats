@@ -2,7 +2,9 @@ package com.example.rotem.beats;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -84,8 +86,19 @@ public class PlaylistDetailsFragment extends Fragment {
                     }
 
                     if (playlist.getPhoto() != null) {
-                        image.setImageBitmap( BitmapFactory.decodeFile(playlist.getPhoto()) );
+                        Bitmap original = BitmapFactory.decodeFile(playlist.getPhoto());
+                        Bitmap rotated;
+
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(90);
+                        rotated = Bitmap.createBitmap(original, 0, 0,
+                                original.getWidth(), original.getHeight(),
+                                matrix, true);
+
+                        image.setImageBitmap(rotated);
                     }
+
+
 
                     title.setText(playlist.getTitle());
                     author.setText(playlist.getAuthor());

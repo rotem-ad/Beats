@@ -158,7 +158,7 @@ public class Model {
         task.execute();
     }
 
-    private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
+    public void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         FileOutputStream fos;
         OutputStream out = null;
         try {

@@ -22,8 +22,8 @@
             android:layout_height="wrap_content"
             android:paddingBottom="20dp">
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/playlist_details_image"
                 android:src="@drawable/beats2"
                 />
@@ -39,6 +39,8 @@
                 android:text="Title: "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="#0041C2"
                 />
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -57,6 +59,8 @@
                 android:text="Tags: "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="#0041C2"
                 />
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -75,6 +79,8 @@
                 android:text="Author: "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="#0041C2"
                 />
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -93,6 +99,8 @@
                 android:text="Rating: "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="#0041C2"
                 />
             <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -111,6 +119,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Created on: "
+                android:textStyle="bold"
+                android:textColor="#0041C2"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -130,6 +140,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Songs: "
+                android:textStyle="bold"
+                android:textColor="#0041C2"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <ListView
