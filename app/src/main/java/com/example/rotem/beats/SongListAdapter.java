@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.rotem.beats.Model.Song;
@@ -66,7 +66,7 @@ public class SongListAdapter extends BaseAdapter {
 
         TextView title = (TextView) convertView.findViewById(R.id.song_list_row_title);
         TextView artist = (TextView) convertView.findViewById(R.id.song_list_row_artist);
-        Button playBtn = (Button) convertView.findViewById(R.id.song_list_row_play_btn);
+        ImageButton playBtn = (ImageButton) convertView.findViewById(R.id.song_list_row_play_btn);
 
         final Song song = data.get(position);
 

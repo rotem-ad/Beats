@@ -3,12 +3,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <Button
+    <ImageButton
         android:id="@+id/song_list_row_play_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Play On YouTube"
-        android:src="@drawable/beats2" />
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:scaleType="fitStart"
+        android:padding="0dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/play6" />
 
     <RelativeLayout
         android:layout_width="match_parent"

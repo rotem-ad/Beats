@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class PlaylistDetailsFragment extends Fragment {
     ListView songsList;
     SongListAdapter adapter;
     ImageView image;
+    RatingBar ratingBar;
     TextView title;
     TextView tags;
     TextView author;
@@ -68,6 +70,7 @@ public class PlaylistDetailsFragment extends Fragment {
     private void init(final View view) {
         image = (ImageView) view.findViewById(R.id.playlist_details_image);
         title = (TextView) view.findViewById(R.id.playlist_details_title);
+        ratingBar = (RatingBar) view.findViewById(R.id.playlist_details_rating_bar);
         tags = (TextView) view.findViewById(R.id.playlist_details_tags);
         author = (TextView) view.findViewById(R.id.playlist_details_author);
         rating = (TextView) view.findViewById(R.id.playlist_details_rating);
@@ -98,11 +101,12 @@ public class PlaylistDetailsFragment extends Fragment {
                         image.setImageBitmap(rotated);
                     }
 
-
+                    // set stars according to playlist rating
+                    ratingBar.setRating(((float) playlist.getRating()));
 
                     title.setText(playlist.getTitle());
                     author.setText(playlist.getAuthor());
-                    rating.setText(Integer.toString( playlist.getRating() ));
+                    rating.setText(" "+ Float.toString( playlist.getRating() ));
                     createDate.setText(playlist.getCreationDate());
 
                     if (playlist.getSongList() != null) { // there is at least 1 song

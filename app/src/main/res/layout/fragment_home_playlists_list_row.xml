@@ -7,7 +7,7 @@
         android:id="@+id/playlist_list_row_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
-
+        android:src="@drawable/beats2"
         />
 
     <RelativeLayout

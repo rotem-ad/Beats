@@ -10,103 +10,117 @@
         android:orientation="vertical">
 
         <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/playlist_details_progressbar"
             style="@android:style/Widget.Holo.ProgressBar.Horizontal"
-            android:indeterminate="true"   />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/playlist_details_image"
-                android:src="@drawable/beats2"
-                />
-        </LinearLayout>
+            android:orientation="horizontal">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp">
-            <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Title: "
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingRight="10dp">
+
+                <ImageView
+                    android:id="@+id/playlist_details_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/beats2" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#0041C2"
-                />
-            <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/playlist_details_title"/>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp">
+                    <TextView
+                        android:id="@+id/playlist_details_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Title"
+                        android:textStyle="bold"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="By "
+                        android:textStyle="bold"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                    <TextView
+                        android:id="@+id/playlist_details_author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Author"
+                        android:textStyle="bold"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp">
+                    <RatingBar
+                        android:id="@+id/playlist_details_rating_bar"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:numStars="5"
+                        android:rating="2"
+                        android:isIndicator="false"
+                        android:gravity="center"
+                        style="?android:attr/ratingBarStyleIndicator"
+                        />
+                    <TextView
+                        android:id="@+id/playlist_details_rating"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom|center_horizontal"
+                        android:text="2.0"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
+
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingBottom="10dp">
+
             <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Tags: "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#0041C2"
-                />
-            <TextView
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/playlist_details_tags"/>
-        </LinearLayout>
+                android:textColor="#0041C2"
+                android:textStyle="bold" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp">
             <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Author: "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#0041C2"
-                />
-            <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/playlist_details_tags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/playlist_details_author"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp">
-            <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rating: "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#0041C2"
-                />
-            <TextView
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/playlist_details_rating"/>
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
         <LinearLayout
@@ -119,9 +133,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Created on: "
-                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#0041C2"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/playlist_details_cdate"
@@ -140,14 +154,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Songs: "
-                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#0041C2"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textStyle="bold" />
 
             <ListView
+                android:id="@+id/playlist_details_songs_listview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/playlist_details_songs_listview" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

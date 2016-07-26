@@ -20,7 +20,7 @@ public class Playlist {
     String photo;
     List<String> tags;
     List<Song> songList;
-    int rating;
+    float rating;
 
     public Playlist() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
@@ -93,7 +93,7 @@ public class Playlist {
         this.songList = songList;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
