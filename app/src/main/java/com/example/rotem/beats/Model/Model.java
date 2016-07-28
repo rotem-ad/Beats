@@ -41,6 +41,10 @@ public class Model {
         void onCancel();
     }
 
+    public interface GetPlaylistRating{
+        void onResult(float newRating);
+    }
+
     public interface DelPlaylist{
         void onComplete(String result);
         void onCancel();
@@ -112,6 +116,10 @@ public class Model {
 
     public void GetPlaylistById(String id, GetPlaylist listener){
         modelFirebase.getPlaylistById(id, listener);
+    }
+
+    public void updatePlaylistRating(final String id, final float userRating, final Model.GetPlaylistRating listener) {
+        modelFirebase.updatePlaylistRating(id, userRating, listener);
     }
 
     public void removePlaylistById(String id, DelPlaylist listener){

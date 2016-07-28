@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
@@ -115,12 +114,12 @@ public class HomeFragmentTab extends Fragment {
 
     private void searchPlaylists() {
 
-        // get dialog_search_playlits.xml view
+        // get dialog_search_playlistss.xml view
         LayoutInflater li = LayoutInflater.from(getContext());
-        View promptsView = li.inflate(R.layout.dialog_search_playlits, null);
+        View promptsView = li.inflate(R.layout.dialog_search_playlists, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setView(promptsView); // set dialog_search_playlits.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView); // set dialog_search_playlistss.xml to alertdialog builder
 
         final EditText tagUserInput = (EditText) promptsView.findViewById(R.id.search_by_tag);
         final EditText authorUserInput = (EditText) promptsView.findViewById(R.id.search_by_author);

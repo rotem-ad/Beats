@@ -217,6 +217,37 @@ public class ModelFirebase {
         });
     }
 
+    public void updatePlaylistRating(final String id, final float userRating, final Model.GetPlaylistRating listener) { //TODO: fix formula
+
+        DatabaseReference playlistRef = dbRef.child(Constants.USERS_COLLECTION); // ref to users collection
+        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) { // for each user in collection
+                    for (DataSnapshot plSnapshot : userSnapshot.child(Constants.PLAYLISTS_COLLECTION).getChildren()) { // for each user's playlist
+                        Playlist playlist = plSnapshot.getValue(Playlist.class);
+                        Log.d("updatePlaylistRating", playlist.getAuthor() + " - " + playlist.getTitle());
+                        if (playlist.getId().equals(id)) { // check if playlist is found
+                            int newRatersCount = playlist.getRatersCount()+1;
+                            float newRating = ( ((float)playlist.getRatersCount()/newRatersCount) * playlist.getRating() ) + (userRating/newRatersCount); // cumulative average formula
+                            plSnapshot.getRef().child("ratersCount").setValue(newRatersCount); // increment raters count by 1
+                            plSnapshot.getRef().child("rating").setValue(newRating); // update rating
+                            listener.onResult(newRating);
+                            return;
+                        }
+                    }
+                }
+                return;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("updatePlaylistRating", "The read failed: " + databaseError.getMessage());
+            }
+        });
+
+    }
+
 
     public void getPlaylistById(final String id, final Model.GetPlaylist listener) {
         DatabaseReference playlistRef = dbRef.child(Constants.USERS_COLLECTION); // ref to users collection

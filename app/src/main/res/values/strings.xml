@@ -23,5 +23,6 @@
     <string name="action_new_playlist">New Playlist</string>
     <string name="action_del_playlist">Delete Playlist</string>
     <string name="action_search_playlist">Search Playlist</string>
+    <string name="dialog_rate_playlist_title">Rate Playlist</string>
 
 </resources>

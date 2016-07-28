@@ -21,6 +21,7 @@ public class Playlist {
     List<String> tags;
     List<Song> songList;
     float rating;
+    int ratersCount;
 
     public Playlist() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
@@ -35,6 +36,7 @@ public class Playlist {
         setCreationDate(this.getCurrentDate());
         setPhoto(null);
         setRating(0);
+        setRatersCount(0);
         setId(null);
     }
 
@@ -49,6 +51,7 @@ public class Playlist {
         result.put("tags", tags);
         result.put("songList", songList);
         result.put("rating", rating);
+        result.put("ratersCount", ratersCount);
 
         return result;
     }
@@ -100,6 +103,15 @@ public class Playlist {
     public void setRating(int rating) {
         this.rating = rating;
     }
+
+    public int getRatersCount() {
+        return ratersCount;
+    }
+
+    public void setRatersCount(int ratersCount) {
+        this.ratersCount = ratersCount;
+    }
+
 
     public String getTitle() {
         return title;
