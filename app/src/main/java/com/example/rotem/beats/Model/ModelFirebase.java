@@ -229,9 +229,10 @@ public class ModelFirebase {
                         Log.d("updatePlaylistRating", playlist.getAuthor() + " - " + playlist.getTitle());
                         if (playlist.getId().equals(id)) { // check if playlist is found
                             int newRatersCount = playlist.getRatersCount()+1;
-                            float newRating = ( ((float)playlist.getRatersCount()/newRatersCount) * playlist.getRating() ) + (userRating/newRatersCount); // cumulative average formula
+                            float newRatingSum = playlist.getRatingSum() + userRating;
+                            float newRating = newRatingSum/newRatersCount;
                             plSnapshot.getRef().child("ratersCount").setValue(newRatersCount); // increment raters count by 1
-                            plSnapshot.getRef().child("rating").setValue(newRating); // update rating
+                            plSnapshot.getRef().child("ratingSum").setValue(newRatingSum); // update ratingSum
                             listener.onResult(newRating);
                             return;
                         }

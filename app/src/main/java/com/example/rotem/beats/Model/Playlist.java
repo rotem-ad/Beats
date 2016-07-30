@@ -20,7 +20,7 @@ public class Playlist {
     String photo;
     List<String> tags;
     List<Song> songList;
-    float rating;
+    float ratingSum;
     int ratersCount;
 
     public Playlist() {
@@ -35,7 +35,7 @@ public class Playlist {
         // set current date as creation date
         setCreationDate(this.getCurrentDate());
         setPhoto(null);
-        setRating(0);
+        setRatingSum(0);
         setRatersCount(0);
         setId(null);
     }
@@ -50,7 +50,7 @@ public class Playlist {
         result.put("photo", photo);
         result.put("tags", tags);
         result.put("songList", songList);
-        result.put("rating", rating);
+        result.put("ratingSum", ratingSum);
         result.put("ratersCount", ratersCount);
 
         return result;
@@ -96,12 +96,12 @@ public class Playlist {
         this.songList = songList;
     }
 
-    public float getRating() {
-        return rating;
+    public float getRatingSum() {
+        return ratingSum;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setRatingSum(float ratingSum) {
+        this.ratingSum = ratingSum;
     }
 
     public int getRatersCount() {

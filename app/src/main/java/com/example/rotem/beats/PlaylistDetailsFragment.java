@@ -7,11 +7,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +16,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -30,11 +25,8 @@ import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
-import com.example.rotem.beats.Model.Song;
 
 import java.text.DecimalFormat;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,13 +100,13 @@ public class PlaylistDetailsFragment extends Fragment {
                     }
 
                     // set stars according to playlist rating
-                    ratingBar.setRating(((float) playlist.getRating()));
+                    float plRating = playlist.getRatingSum()/playlist.getRatersCount();
+                    if (plRating > 0) {
+                        displayRating(plRating);
+                    }
 
                     title.setText(playlist.getTitle());
                     author.setText(playlist.getAuthor());
-                    DecimalFormat df = new DecimalFormat();
-                    df.setMaximumFractionDigits(2); // limit rating precision to 2 digits
-                    rating.setText(" "+ String.format(Float.toString(playlist.getRating()), df));
                     createDate.setText(playlist.getCreationDate());
 
                     if (playlist.getSongList() != null) { // there is at least 1 song
@@ -276,12 +268,17 @@ public class PlaylistDetailsFragment extends Fragment {
         model.updatePlaylistRating(playlistId, userRating, new Model.GetPlaylistRating() {
             @Override
             public void onResult(float newRating) {
-                ratingBar.setRating(newRating);
-                DecimalFormat df = new DecimalFormat();
-                df.setMaximumFractionDigits(2); // limit rating precision to 2 digits
-                rating.setText(String.format(Float.toString(newRating), df));
+                displayRating(newRating);
             }
         });
+    }
+
+    private void displayRating(float playlistRating) {
+        ratingBar.setRating(playlistRating);
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2); // limit rating precision to 2 digits
+        String ratingStr = Float.toString(playlistRating);
+        rating.setText(df.format(playlistRating));
     }
 
     /*
