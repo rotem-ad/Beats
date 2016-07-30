@@ -88,8 +88,9 @@ public class PlaylistDetailsFragment extends Fragment {
 
                     if (playlist.getPhoto() != null) {
                         Bitmap original = BitmapFactory.decodeFile(playlist.getPhoto());
-                        Bitmap rotated;
 
+                        /*
+                        Bitmap rotated;
                         Matrix matrix = new Matrix();
                         matrix.postRotate(90);
                         rotated = Bitmap.createBitmap(original, 0, 0,
@@ -97,6 +98,9 @@ public class PlaylistDetailsFragment extends Fragment {
                                 matrix, true);
 
                         image.setImageBitmap(rotated);
+                        */
+
+                        image.setImageBitmap(original);
                     }
 
                     // set stars according to playlist rating
@@ -149,21 +153,6 @@ public class PlaylistDetailsFragment extends Fragment {
                 return true;
             }
         });
-
-        /*
-
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                Toast.makeText(MyApplication.getAppContext(), "RatingBar clicked" ,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        */
-
-
-
     }
 
     public boolean isModified() {
@@ -192,11 +181,20 @@ public class PlaylistDetailsFragment extends Fragment {
             case R.id.action_del_playlist:
                 this.removePlaylist();
                 return true;
+            case R.id.action_edit_playlist:
+                this.editPlaylist();
+                return true;
             case R.id.action_settings:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void editPlaylist() {
+        Intent intent = new Intent(getActivity(), PlaylistEditActivity.class);
+        intent.putExtra("PLAYLIST_ID", playlistId);
+        startActivityForResult(intent,Constants.PLAYLIST_EDIT);
     }
 
     private void removePlaylist() {
@@ -277,16 +275,6 @@ public class PlaylistDetailsFragment extends Fragment {
         ratingBar.setRating(playlistRating);
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2); // limit rating precision to 2 digits
-        String ratingStr = Float.toString(playlistRating);
         rating.setText(df.format(playlistRating));
     }
-
-    /*
-    public void editPlaylist() {
-        Intent intent = new Intent(getActivity(), StudentEditActivity.class);
-        intent.putExtra("STUDENT_ID", st.getId());
-        startActivityForResult(intent, 2);
-    }
-    */
-
 }

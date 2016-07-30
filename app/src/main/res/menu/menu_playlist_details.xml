@@ -7,9 +7,16 @@
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
     <item
+        android:id="@+id/action_edit_playlist"
+        android:icon="@drawable/edit5"
+        android:text="@string/action_edit_playlist"
+        android:title="@string/action_edit_playlist"
+        android:orderInCategory="100"
+        app:showAsAction="always|withText" />
+    <item
         android:id="@+id/action_del_playlist"
         android:icon="@drawable/trash6"
-        android:text="Delete Playlist"
+        android:text="@string/action_del_playlist"
         android:title="@string/action_del_playlist"
         android:orderInCategory="100"
         app:showAsAction="always|withText" />

@@ -12,4 +12,5 @@ public class Constants {
 
     public static final int PLAYLIST_DETAILS = 1;
     public static final int PLAYLIST_NEW = 2;
+    public static final int PLAYLIST_EDIT = 3;
 }

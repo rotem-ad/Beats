@@ -2,6 +2,7 @@ package com.example.rotem.beats.Model;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * Created by Rotem on 09/07/2016.
  */
-public class Playlist {
+public class Playlist implements Serializable {
     String id;
     String title;
     String author;
