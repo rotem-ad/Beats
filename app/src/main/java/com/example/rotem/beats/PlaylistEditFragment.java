@@ -1,11 +1,14 @@
 package com.example.rotem.beats;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +17,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
 import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
@@ -36,6 +40,10 @@ public class PlaylistEditFragment extends Fragment {
     ProgressBar progressBar;
     String playlistId;
     Button addTagBtn;
+    Button addSongBtn;
+    Button saveBtn;
+    Button cancelBtn;
+    Playlist mPlaylist;
 
     boolean modified;
 
@@ -61,6 +69,9 @@ public class PlaylistEditFragment extends Fragment {
         image = (ImageView) view.findViewById(R.id.playlist_edit_image);
         title = (EditText) view.findViewById(R.id.playlist_edit_title);
         tags = (TextView) view.findViewById(R.id.playlist_edit_tags);
+
+        saveBtn = (Button) view.findViewById(R.id.playlist_edit_save);
+        cancelBtn = (Button) view.findViewById(R.id.playlist_edit_cancel);
         //addSongBtn = (Button) view.findViewById(R.id.playlist_edit_add_song);
         addTagBtn = (Button) view.findViewById(R.id.playlist_edit_add_tag);
         progressBar = (ProgressBar) view.findViewById(R.id.playlist_edit_progressbar);
@@ -70,24 +81,25 @@ public class PlaylistEditFragment extends Fragment {
         model.GetPlaylistById(this.playlistId, new Model.GetPlaylist() {
             @Override
             public void onResult(final Playlist playlist) {
-                if (playlist != null) {
-                    if (playlist.getPhoto() != null) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(playlist.getPhoto());
+                mPlaylist = playlist;
+                if (mPlaylist != null) {
+                    if (mPlaylist.getPhoto() != null) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(mPlaylist.getPhoto());
                         image.setImageBitmap(bitmap);
                     }
 
-                    title.setText(playlist.getTitle());
+                    title.setText(mPlaylist.getTitle());
 
                     String tagList = "";
-                    if (playlist.getTags() != null) {
-                        for (String tag : playlist.getTags()) {
+                    if (mPlaylist.getTags() != null) {
+                        for (String tag : mPlaylist.getTags()) {
                             tagList = tagList + tag + " ";
                         }
                         tags.setText(tagList); // populate tags text view
                     }
 
-                    if (playlist.getSongList() != null) { // there is at least 1 song
-                        adapter = new SongListAdapter(getActivity(), playlist.getSongList()); // populate songs list
+                    if (mPlaylist.getSongList() != null) { // there is at least 1 song
+                        adapter = new SongListAdapter(getActivity(), mPlaylist.getSongList()); // populate songs list
                         songsList.setAdapter(adapter);
                     }
                 }
@@ -103,14 +115,75 @@ public class PlaylistEditFragment extends Fragment {
         addTagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment addTagDialog = new AddTagDialogFragment();
-                addTagDialog.show(getFragmentManager(), "Display add tag dialog");
+                openDialog(Constants.GET_TAG);
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                getActivity().setResult(Activity.RESULT_CANCELED, intent);
+                getActivity().finish();
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String titleUserInput = String.valueOf(title.getText());
+                mPlaylist.setTitle(titleUserInput);
+                model.updatePlaylist(playlistId,mPlaylist, new Model.AddPlaylistListener() { // update playlist to DB
+                    @Override
+                    public void onComplete(String result) {
+                        if (result.equals("SUCCESS")) {
+                            Toast.makeText(MyApplication.getAppContext(), "Playlist saved successfully" ,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                Intent intent = new Intent();
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
             }
         });
     }
 
     public void setPlaylistId(String playlistId) {
         this.playlistId = playlistId;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Make sure fragment codes match up
+        if (requestCode == Constants.GET_TAG) {
+            String tagInput = data.getStringExtra("TAG");
+            String tagList = "";
+            mPlaylist.getTags().add(tagInput);
+            for (String tag : mPlaylist.getTags()) {
+                tagList = tagList + tag + " ";
+            }
+            tags.setText(tagList);
+        }
+    }
+
+    private void openDialog (int dialogCode) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        DialogFragment fragment;
+        switch (dialogCode) {
+            case Constants.GET_TAG:
+                fragment = new AddTagDialogFragment();
+                break;
+            case Constants.GET_SONG:
+                fragment = new AddSongDialogFragment();
+                break;
+            default:
+                fragment = null;
+        }
+        fragment.setTargetFragment(this, dialogCode);
+        fragment.show(fm, "Display dialog");
     }
 
 }

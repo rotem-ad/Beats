@@ -77,6 +77,32 @@ public class PlaylistDetailsFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.playlist_details_progressbar);
         songsList = (ListView) view.findViewById(R.id.playlist_details_songs_listview);
 
+        loadPlaylistsData();
+
+        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (isPlaylistOwner) {
+                        Toast.makeText(getActivity(), "You can't rate your own playlist" ,
+                                Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    openRatingDialog();
+                    v.setPressed(false);
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.setPressed(true);
+                }
+                if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    v.setPressed(false);
+                }
+                return true;
+            }
+        });
+    }
+
+    private void loadPlaylistsData() {
         progressBar.setVisibility(View.VISIBLE);
         Model.getInstance().GetPlaylistById(this.playlistId, new Model.GetPlaylist() {
             @Override
@@ -136,28 +162,6 @@ public class PlaylistDetailsFragment extends Fragment {
             @Override
             public void onCancel() {
 
-            }
-        });
-
-        ratingBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (isPlaylistOwner) {
-                        Toast.makeText(getActivity(), "You can't rate your own playlist" ,
-                                Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                    openRatingDialog();
-                    v.setPressed(false);
-                }
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    v.setPressed(true);
-                }
-                if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    v.setPressed(false);
-                }
-                return true;
             }
         });
     }
@@ -283,5 +287,16 @@ public class PlaylistDetailsFragment extends Fragment {
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2); // limit rating precision to 2 digits
         rating.setText(df.format(playlistRating));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.PLAYLIST_EDIT) {
+            if(resultCode == Activity.RESULT_OK){
+                loadPlaylistsData();
+            }
+        }
     }
 }

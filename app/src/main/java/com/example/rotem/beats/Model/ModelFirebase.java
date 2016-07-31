@@ -334,6 +334,17 @@ public class ModelFirebase {
         */
     }
 
+    public void updatePlaylist (final String id, Playlist playlist, final Model.AddPlaylistListener listener) {
+        DatabaseReference playlistRef = dbRef.child(Constants.USERS_COLLECTION).child(this.getUserId())
+                .child(Constants.PLAYLISTS_COLLECTION).child(id); // ref to current playlist
+        playlistRef.setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete("SUCCESS");
+            }
+        });
+    }
+
 
     /*
     private void seed() {

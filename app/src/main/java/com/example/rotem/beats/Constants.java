@@ -13,4 +13,7 @@ public class Constants {
     public static final int PLAYLIST_DETAILS = 1;
     public static final int PLAYLIST_NEW = 2;
     public static final int PLAYLIST_EDIT = 3;
+
+    public static final int GET_TAG = 4;
+    public static final int GET_SONG = 5;
 }

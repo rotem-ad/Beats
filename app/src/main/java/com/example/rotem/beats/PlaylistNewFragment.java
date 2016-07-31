@@ -13,7 +13,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
+import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
@@ -147,50 +151,14 @@ public class PlaylistNewFragment extends Fragment {
         addTagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // get dialog_add_tag.xml view
-                LayoutInflater li = LayoutInflater.from(getContext());
-                View promptsView = li.inflate(R.layout.dialog_add_tag, null);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                alertDialogBuilder.setView(promptsView); // set dialog_add_tag.xml to alertdialog builder
-
-                final EditText tagUserInput = (EditText) promptsView.findViewById(R.id.add_tag_input);
-
-                // set dialog message
-                alertDialogBuilder
-                        .setCancelable(true)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        // get user input and set it to Tags text view
-                                        String tagList = "";
-                                        playlist.getTags().add(tagUserInput.getText().toString());
-                                        for (String tag : playlist.getTags()) {
-                                            tagList = tagList + tag + " ";
-                                        }
-                                        tags.setText(tagList);
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
-                alertDialog.show();
-
+                openDialog(Constants.GET_TAG);
             }
         });
 
         addSongBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAddSongDialog();
+                openDialog(Constants.GET_SONG);
             }
         });
 
@@ -229,11 +197,30 @@ public class PlaylistNewFragment extends Fragment {
 
     }
 
-
-/****************************** Change Photo onActivity Result *************************************/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // add new tag
+        if (requestCode == Constants.GET_TAG) {
+            String tagInput = data.getStringExtra("TAG");
+            String tagList = "";
+            playlist.getTags().add(tagInput);
+            for (String tag : playlist.getTags()) {
+                tagList = tagList + tag + " ";
+            }
+            tags.setText(tagList);
+        }
+
+        // add new song
+        if (requestCode == Constants.GET_SONG) {
+            String artistInput = data.getStringExtra("ARTIST");
+            String titleInput = data.getStringExtra("TITLE");
+            addSong(artistInput,titleInput);
+            loadSongsData();
+        }
+
+        // change photo
         if(resultCode != Activity.RESULT_OK)
             return;
         Bitmap bitmap = null;
@@ -294,39 +281,20 @@ public class PlaylistNewFragment extends Fragment {
         data.add(song); // add song to list
     }
 
-    private void openAddSongDialog() {
-        // get dialog_add_song.xml view
-        LayoutInflater li = LayoutInflater.from(getContext());
-        View promptsView = li.inflate(R.layout.dialog_add_song, null);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setView(promptsView); // set dialog_add_song.xml to alertdialog builder
-
-        final EditText artistUserInput = (EditText) promptsView.findViewById(R.id.add_song_artist);
-        final EditText titleUserInput = (EditText) promptsView.findViewById(R.id.add_song_title);
-
-        // set dialog message
-        alertDialogBuilder
-                .setCancelable(true)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                // get user input and add song to list
-                                addSong(artistUserInput.getText().toString(),titleUserInput.getText().toString());
-                                loadSongsData();
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
+    private void openDialog (int dialogCode) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        DialogFragment fragment;
+        switch (dialogCode) {
+            case Constants.GET_TAG:
+                fragment = new AddTagDialogFragment();
+                break;
+            case Constants.GET_SONG:
+                fragment = new AddSongDialogFragment();
+                break;
+            default:
+                fragment = null;
+        }
+        fragment.setTargetFragment(this, dialogCode);
+        fragment.show(fm, "Display dialog");
     }
 }

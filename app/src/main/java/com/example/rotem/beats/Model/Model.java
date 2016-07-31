@@ -130,6 +130,9 @@ public class Model {
         modelFirebase.addPlaylist(playlist, listener);
     }
 
+    public void updatePlaylist (final String id, Playlist playlist, final Model.AddPlaylistListener listener) {
+        modelFirebase.updatePlaylist(id,playlist,listener);
+    }
 
     public void saveImage(final Bitmap imageBitmap, final String imageName) {
         saveImageToFile(imageBitmap,imageName); // synchronously save image locally
