@@ -47,7 +47,7 @@ public class PlaylistDetailsFragment extends Fragment {
     String playlistId;
     String currentUser = MyApplication.getCurrentUser();
 
-    
+    boolean isPlaylistOwner;
     boolean modified;
 
     public PlaylistDetailsFragment() {
@@ -60,8 +60,9 @@ public class PlaylistDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_playlist_details, container, false);
-        init(rootView);
         modified = false;
+        isPlaylistOwner = false;
+        init(rootView);
         return rootView;
     }
 
@@ -83,6 +84,7 @@ public class PlaylistDetailsFragment extends Fragment {
                 if (playlist != null) {
                     // Display options menu only if current user is owner of this playlist
                     if (currentUser.equals(playlist.getAuthor())) {
+                        isPlaylistOwner = true;
                         setHasOptionsMenu(true);
                     }
 
@@ -141,6 +143,11 @@ public class PlaylistDetailsFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (isPlaylistOwner) {
+                        Toast.makeText(getActivity(), "You can't rate your own playlist" ,
+                                Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                     openRatingDialog();
                     v.setPressed(false);
                 }
