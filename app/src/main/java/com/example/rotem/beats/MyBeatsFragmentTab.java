@@ -168,7 +168,7 @@ public class MyBeatsFragmentTab extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == Constants.PLAYLIST_DETAILS) { //TODO: maybe should be removed
+        if (requestCode == Constants.PLAYLIST_DETAILS) {
             if(resultCode == Activity.RESULT_OK){
                 loadPlaylistsData();
             }

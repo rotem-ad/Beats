@@ -2,6 +2,8 @@ package com.example.rotem.beats;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,9 +11,14 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +31,7 @@ import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
 import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+import com.example.rotem.beats.Model.Song;
 
 
 /**
@@ -72,7 +80,7 @@ public class PlaylistEditFragment extends Fragment {
 
         saveBtn = (Button) view.findViewById(R.id.playlist_edit_save);
         cancelBtn = (Button) view.findViewById(R.id.playlist_edit_cancel);
-        //addSongBtn = (Button) view.findViewById(R.id.playlist_edit_add_song);
+        addSongBtn = (Button) view.findViewById(R.id.playlist_edit_add_song);
         addTagBtn = (Button) view.findViewById(R.id.playlist_edit_add_tag);
         progressBar = (ProgressBar) view.findViewById(R.id.playlist_edit_progressbar);
         songsList = (ListView) view.findViewById(R.id.playlist_edit_songs_listview);
@@ -101,6 +109,7 @@ public class PlaylistEditFragment extends Fragment {
                     if (mPlaylist.getSongList() != null) { // there is at least 1 song
                         adapter = new SongListAdapter(getActivity(), mPlaylist.getSongList()); // populate songs list
                         songsList.setAdapter(adapter);
+                        songsList.setLongClickable(true);
                     }
                 }
                 progressBar.setVisibility(View.GONE);
@@ -116,6 +125,22 @@ public class PlaylistEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 openDialog(Constants.GET_TAG);
+            }
+        });
+
+        addSongBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog(Constants.GET_SONG);
+            }
+        });
+
+        songsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int pos, long id) {
+                Log.v("long clicked","pos: " + pos);
+                setHasOptionsMenu(true); // display song options menu
+                return true;
             }
         });
 
@@ -166,6 +191,42 @@ public class PlaylistEditFragment extends Fragment {
                 tagList = tagList + tag + " ";
             }
             tags.setText(tagList);
+        }
+
+        if (requestCode == Constants.GET_SONG) {
+            String artistInput = data.getStringExtra("ARTIST");
+            String titleInput = data.getStringExtra("TITLE");
+            Song song = new Song();
+            song.setArtist(artistInput);
+            song.setTitle(titleInput);
+            mPlaylist.getSongList().add(song); // add new song to list
+            adapter.notifyDataSetChanged(); // notify adapter
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_song_options, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // Handle item selection
+        switch (id) {
+            case R.id.action_edit_song:
+                //this.removePlaylist();
+                return true;
+            case R.id.action_del_song:
+                //this.editPlaylist();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

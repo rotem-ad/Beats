@@ -296,6 +296,9 @@ public class PlaylistDetailsFragment extends Fragment {
         if (requestCode == Constants.PLAYLIST_EDIT) {
             if(resultCode == Activity.RESULT_OK){
                 loadPlaylistsData();
+                // let invoking activity know there was a change
+                Intent intent = new Intent();
+                getActivity().setResult(Activity.RESULT_OK, intent);
             }
         }
     }
