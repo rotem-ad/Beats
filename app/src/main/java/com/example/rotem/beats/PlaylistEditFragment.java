@@ -2,8 +2,6 @@ package com.example.rotem.beats;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +10,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +30,8 @@ import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
+
+import java.util.LinkedList;
 
 
 /**
@@ -106,11 +106,13 @@ public class PlaylistEditFragment extends Fragment {
                         tags.setText(tagList); // populate tags text view
                     }
 
-                    if (mPlaylist.getSongList() != null) { // there is at least 1 song
-                        adapter = new SongListAdapter(getActivity(), mPlaylist.getSongList()); // populate songs list
-                        songsList.setAdapter(adapter);
-                        songsList.setLongClickable(true);
+                    if (mPlaylist.getSongList() == null) {
+                        mPlaylist.setSongList(new LinkedList<Song>());
                     }
+                    adapter = new SongListAdapter(getActivity(), mPlaylist.getSongList()); // populate songs list
+                    songsList.setAdapter(adapter);
+                    songsList.setLongClickable(true);
+
                 }
                 progressBar.setVisibility(View.GONE);
             }
@@ -135,14 +137,7 @@ public class PlaylistEditFragment extends Fragment {
             }
         });
 
-        songsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int pos, long id) {
-                Log.v("long clicked","pos: " + pos);
-                setHasOptionsMenu(true); // display song options menu
-                return true;
-            }
-        });
+        registerForContextMenu(songsList);
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,29 +199,32 @@ public class PlaylistEditFragment extends Fragment {
         }
     }
 
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_song_options, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Song Options"); // TODO: replace with string value
+        if (v.getId()==R.id.playlist_edit_songs_listview) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_song_options, menu);
+        }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.edit_song:
+                // edit stuff here
+                String songArtist = mPlaylist.getSongList().get(info.position).getArtist();
+                String songTitle = mPlaylist.getSongList().get(info.position).getTitle();
 
-        // Handle item selection
-        switch (id) {
-            case R.id.action_edit_song:
-                //this.removePlaylist();
                 return true;
-            case R.id.action_del_song:
-                //this.editPlaylist();
+            case R.id.delete_song:
+                // remove stuff here
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return super.onContextItemSelected(item);
         }
     }
 
