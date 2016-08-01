@@ -16,4 +16,5 @@ public class Constants {
 
     public static final int GET_TAG = 4;
     public static final int GET_SONG = 5;
+    public static final int EDIT_SONG = 6;
 }

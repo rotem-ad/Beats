@@ -39,8 +39,14 @@ public class AddSongDialogFragment extends DialogFragment {
         final EditText artistUserInput = (EditText) promptsView.findViewById(R.id.add_song_artist);
         final EditText titleUserInput = (EditText) promptsView.findViewById(R.id.add_song_title);
 
+        if (getArguments() != null) {
+            artistUserInput.setText(getArguments().getString("CURRENT_ARTIST"));
+            titleUserInput.setText(getArguments().getString("CURRENT_TITLE"));
+        }
+
         // set dialog message
         builder
+                .setTitle(R.string.dialog_add_song_title)
                 .setCancelable(true)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {

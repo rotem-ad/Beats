@@ -27,5 +27,7 @@
     <string name="action_edit_playlist">Edit Playlist</string>
     <string name="action_edit_song">Edit Song</string>
     <string name="action_del_song">Delete Song</string>
+    <string name="dialog_add_song_title">Song Details</string>
+    <string name="menu_song_options_title">Song Options</string>
 
 </resources>

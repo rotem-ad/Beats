@@ -52,6 +52,9 @@ public class PlaylistEditFragment extends Fragment {
     Button saveBtn;
     Button cancelBtn;
     Playlist mPlaylist;
+    String currSongArtist;
+    String currSongTitle;
+    int currSongId;
 
     boolean modified;
 
@@ -138,6 +141,20 @@ public class PlaylistEditFragment extends Fragment {
         });
 
         registerForContextMenu(songsList);
+        songsList.setItemsCanFocus(false);
+
+        songsList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                view.setSelected(true);
+                Log.d("setOnItemSelected","setSelected");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,7 +211,17 @@ public class PlaylistEditFragment extends Fragment {
             Song song = new Song();
             song.setArtist(artistInput);
             song.setTitle(titleInput);
+            song.setId(String.valueOf(mPlaylist.getSongList().size())); // TODO: bug - after song removal the id is incorrect
             mPlaylist.getSongList().add(song); // add new song to list
+            adapter.notifyDataSetChanged(); // notify adapter
+        }
+
+        if (requestCode == Constants.EDIT_SONG) {
+            String artistInput = data.getStringExtra("ARTIST");
+            String titleInput = data.getStringExtra("TITLE");
+            // update current song in list
+            mPlaylist.getSongList().get(currSongId).setArtist(artistInput);
+            mPlaylist.getSongList().get(currSongId).setTitle(titleInput);
             adapter.notifyDataSetChanged(); // notify adapter
         }
     }
@@ -203,7 +230,7 @@ public class PlaylistEditFragment extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Song Options"); // TODO: replace with string value
+        menu.setHeaderTitle(R.string.menu_song_options_title);
         if (v.getId()==R.id.playlist_edit_songs_listview) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.menu_song_options, menu);
@@ -213,15 +240,17 @@ public class PlaylistEditFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        currSongId = info.position; // store current song index
         switch(item.getItemId()) {
             case R.id.edit_song:
                 // edit stuff here
-                String songArtist = mPlaylist.getSongList().get(info.position).getArtist();
-                String songTitle = mPlaylist.getSongList().get(info.position).getTitle();
-
+                currSongArtist = mPlaylist.getSongList().get(info.position).getArtist(); // store current song artist
+                currSongTitle = mPlaylist.getSongList().get(info.position).getTitle(); // store current song title
+                openDialog(Constants.EDIT_SONG);
                 return true;
             case R.id.delete_song:
-                // remove stuff here
+                mPlaylist.getSongList().remove(currSongId); // remove song by index
+                adapter.notifyDataSetChanged(); // notify adapter
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -237,6 +266,14 @@ public class PlaylistEditFragment extends Fragment {
                 break;
             case Constants.GET_SONG:
                 fragment = new AddSongDialogFragment();
+                break;
+            case Constants.EDIT_SONG:
+                fragment = new AddSongDialogFragment();
+                // Supply current song details as arguments
+                Bundle args = new Bundle();
+                args.putString("CURRENT_ARTIST",currSongArtist);
+                args.putString("CURRENT_TITLE",currSongTitle);
+                fragment.setArguments(args);
                 break;
             default:
                 fragment = null;
