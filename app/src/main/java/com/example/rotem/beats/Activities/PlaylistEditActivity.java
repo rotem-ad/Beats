@@ -1,8 +1,11 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Activities;
 
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.rotem.beats.Fragments.PlaylistEditFragment;
+import com.example.rotem.beats.R;
 
 public class PlaylistEditActivity extends AppCompatActivity {
 

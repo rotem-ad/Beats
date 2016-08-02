@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,9 +8,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
 
+import com.example.rotem.beats.Fragments.HomeFragmentTab;
+import com.example.rotem.beats.Fragments.MyBeatsFragmentTab;
 import com.example.rotem.beats.Model.Model;
+import com.example.rotem.beats.MyApplication;
+import com.example.rotem.beats.R;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Fragments;
 
 
 import android.app.Activity;
@@ -28,11 +28,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rotem.beats.Adapters.SongListAdapter;
+import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
 import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
+import com.example.rotem.beats.MyApplication;
+import com.example.rotem.beats.R;
 
 import java.io.File;
 import java.util.LinkedList;

@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Model.Song;
+import com.example.rotem.beats.R;
 
 import java.util.List;
 

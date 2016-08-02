@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,8 +22,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rotem.beats.Adapters.SongListAdapter;
+import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+import com.example.rotem.beats.MyApplication;
+import com.example.rotem.beats.Activities.PlaylistEditActivity;
+import com.example.rotem.beats.R;
 
 import java.text.DecimalFormat;
 
@@ -205,7 +209,7 @@ public class PlaylistDetailsFragment extends Fragment {
     public void editPlaylist() {
         Intent intent = new Intent(getActivity(), PlaylistEditActivity.class);
         intent.putExtra("PLAYLIST_ID", playlistId);
-        startActivityForResult(intent,Constants.PLAYLIST_EDIT);
+        startActivityForResult(intent, Constants.PLAYLIST_EDIT);
     }
 
     private void removePlaylist() {

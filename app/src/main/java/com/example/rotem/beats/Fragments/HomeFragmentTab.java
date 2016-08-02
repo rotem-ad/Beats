@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+import com.example.rotem.beats.Activities.PlaylistDetailsActivity;
+import com.example.rotem.beats.R;
 
 import java.util.List;
 

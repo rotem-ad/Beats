@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,10 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
+import com.example.rotem.beats.MyApplication;
+import com.example.rotem.beats.Activities.PlaylistDetailsActivity;
+import com.example.rotem.beats.Activities.PlaylistNewActivity;
+import com.example.rotem.beats.R;
 
-import java.text.FieldPosition;
 import java.util.List;
 
 public class MyBeatsFragmentTab extends Fragment {
@@ -60,7 +64,7 @@ public class MyBeatsFragmentTab extends Fragment {
                 String playlistId = data.get(position).getId();
                 Intent intent = new Intent(getActivity(), PlaylistDetailsActivity.class);
                 intent.putExtra("PLAYLIST_ID", playlistId);
-                startActivityForResult(intent,Constants.PLAYLIST_DETAILS);
+                startActivityForResult(intent, Constants.PLAYLIST_DETAILS);
             }
         });
 

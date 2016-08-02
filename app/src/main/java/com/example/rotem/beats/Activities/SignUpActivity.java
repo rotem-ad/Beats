@@ -1,7 +1,6 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Activities;
 
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +11,8 @@ import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.User;
+import com.example.rotem.beats.MyApplication;
+import com.example.rotem.beats.R;
 
 public class SignUpActivity extends AppCompatActivity {
 

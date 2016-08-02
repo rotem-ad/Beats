@@ -1,4 +1,4 @@
-package com.example.rotem.beats;
+package com.example.rotem.beats.Activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,9 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.rotem.beats.Model.Model;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import com.example.rotem.beats.MyApplication;
+import com.example.rotem.beats.R;
 
 public class LoginActivity extends AppCompatActivity {
 
