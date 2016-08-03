@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by Rotem on 25/06/2016.
@@ -176,7 +177,9 @@ public class ModelFirebase {
 
                         // there is a value in author search field and not in tag field
                         if ( !(byAuthor.isEmpty()) && (byTag.isEmpty()) ) {
-                            if (playlist.getAuthor().contains(byAuthor)) {
+                            // do case insensitive search for author
+                            boolean foundAuthor = Pattern.compile(Pattern.quote(byAuthor), Pattern.CASE_INSENSITIVE).matcher(playlist.getAuthor()).find();
+                            if (foundAuthor) {
                                 plList.add(playlist);
                             }
                         }
@@ -194,7 +197,9 @@ public class ModelFirebase {
 
                         // there is a value in both search fields
                         if ( !(byAuthor.isEmpty()) && !(byTag.isEmpty()) ) {
-                            if (playlist.getAuthor().contains(byAuthor)) { // search author
+                            // do case insensitive search for author
+                            boolean foundAuthor = Pattern.compile(Pattern.quote(byAuthor), Pattern.CASE_INSENSITIVE).matcher(playlist.getAuthor()).find();
+                            if (foundAuthor) { // author was found
                                 if (playlist.getTags() != null) {
                                     for (String tag : playlist.getTags()) { // check if tag is found in playlist
                                         if (byTag.equalsIgnoreCase(tag)) {

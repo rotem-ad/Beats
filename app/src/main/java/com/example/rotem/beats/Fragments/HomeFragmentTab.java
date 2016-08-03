@@ -129,7 +129,7 @@ public class HomeFragmentTab extends Fragment {
         // set dialog message
         alertDialogBuilder
                 .setTitle(R.string.action_search_playlist)
-                .setCancelable(false)
+                .setCancelable(true)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
@@ -157,6 +157,12 @@ public class HomeFragmentTab extends Fragment {
 
                                     }
                                 });
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
                             }
                         });
 
