@@ -94,7 +94,7 @@ public class PlaylistNewFragment extends Fragment {
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
+                if (which == 0) { // from camera
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     File file = new File(Environment.getExternalStorageDirectory(), "tmp_avater" + String.valueOf(System.currentTimeMillis()) + ".jpg");
                     imageCaptureUri = Uri.fromFile(file);
@@ -107,7 +107,7 @@ public class PlaylistNewFragment extends Fragment {
                         ex.printStackTrace();
                     }
                     dialog.cancel();
-                } else {
+                } else { // from gallery
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -246,18 +246,20 @@ public class PlaylistNewFragment extends Fragment {
         *   either by choosing it from the gallery or photo which has been taken by camera.
         *   Now we need to start manipulate it.
          */
+//
+//        Bitmap rotated;
+//
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(90);
+//        rotated = Bitmap.createBitmap(bitmap, 0, 0,
+//                bitmap.getWidth(), bitmap.getHeight(),
+//                matrix, true);
 
-        Bitmap rotated;
 
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        rotated = Bitmap.createBitmap(bitmap, 0, 0,
-                bitmap.getWidth(), bitmap.getHeight(),
-                matrix, true);
-
-
-        playlist.setPhoto(imageCaptureUri.getPath());
-        image.setImageBitmap(rotated);
+        String imageName = String.valueOf(System.currentTimeMillis()) + "_" + path.substring(path.lastIndexOf("/")+1);
+        playlist.setPhoto(imageName);
+        model.saveImage(bitmap,imageName);
+        image.setImageBitmap(bitmap);
 
     }
 

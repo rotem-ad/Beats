@@ -136,7 +136,7 @@ public class Model {
 
     public void saveImage(final Bitmap imageBitmap, final String imageName) {
         saveImageToFile(imageBitmap,imageName); // synchronously save image locally
-        Thread d = new Thread(new Runnable() {  // asynchronously save image to parse
+        Thread d = new Thread(new Runnable() {  // asynchronously save image to Cloudinary
             @Override
             public void run() {
                 modelCloudinary.saveImage(imageBitmap,imageName);
@@ -153,7 +153,7 @@ public class Model {
         AsyncTask<String,String,Bitmap> task = new AsyncTask<String, String, Bitmap >() {
             @Override
             protected Bitmap doInBackground(String... params) {
-                Bitmap bmp = loadImageFromFile(imageName);              //first try to fin the image on the device
+                Bitmap bmp = loadImageFromFile(imageName);              //first try to find the image on the device
                 if (bmp == null) {                                      //if image not found - try downloading it from parse
                     bmp = modelCloudinary.loadImage(imageName);
                     if (bmp != null) saveImageToFile(bmp,imageName);    //save the image locally for next time
@@ -170,21 +170,8 @@ public class Model {
     }
 
     public void saveImageToFile(Bitmap imageBitmap, String imageFileName){
-        FileOutputStream fos;
         OutputStream out = null;
         try {
-
-            //File dir = context.getExternalFilesDir(null);
-//            boolean hasPermission = (MyApplication.getAppContext().checkPermission(Manifest.permission.) == PackageManager.PERMISSION_GRANTED);
-//            if (!hasPermission) {
-//                Log.d(TAG, "Has no permission! Ask!");
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
-//            } else {
-//                Log.d(TAG, "Permission already given!");
-//                write();
-//            }
-
-
             File dir = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES);
             if (!dir.exists()) {
@@ -197,12 +184,12 @@ public class Model {
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
 
-            //add the picture to the gallery so we dont need to manage the cache size
+            //add the picture to the gallery so we don't need to manage the cache size
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             Uri contentUri = Uri.fromFile(imageFile);
             mediaScanIntent.setData(contentUri);
             context.sendBroadcast(mediaScanIntent);
-            Log.d("tag","add image to cache: " + imageFileName);
+            Log.d("saveImageToFile","add image to cache: " + imageFileName);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -212,16 +199,14 @@ public class Model {
     }
 
     private Bitmap loadImageFromFile(String imageFileName){
-        String str = null;
         Bitmap bitmap = null;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File imageFile = new File(dir,imageFileName);
 
-            //File dir = context.getExternalFilesDir(null);
             InputStream inputStream = new FileInputStream(imageFile);
             bitmap = BitmapFactory.decodeStream(inputStream);
-            Log.d("tag","got image from cache: " + imageFileName);
+            Log.d("loadImageFromFile","got image from cache: " + imageFileName);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

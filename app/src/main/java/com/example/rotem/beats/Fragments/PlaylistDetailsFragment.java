@@ -119,20 +119,13 @@ public class PlaylistDetailsFragment extends Fragment {
                     }
 
                     if (playlist.getPhoto() != null) {
-                        Bitmap original = BitmapFactory.decodeFile(playlist.getPhoto());
 
-                        /*
-                        Bitmap rotated;
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate(90);
-                        rotated = Bitmap.createBitmap(original, 0, 0,
-                                original.getWidth(), original.getHeight(),
-                                matrix, true);
-
-                        image.setImageBitmap(rotated);
-                        */
-
-                        image.setImageBitmap(original);
+                        model.loadImage(playlist.getPhoto(), new Model.LoadImageListener() {
+                            @Override
+                            public void onResult(Bitmap imageBmp) {
+                                image.setImageBitmap(imageBmp);
+                            }
+                        });
                     }
 
                     // set stars according to playlist rating
