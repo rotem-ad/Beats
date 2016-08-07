@@ -17,4 +17,9 @@ public class Constants {
     public static final int GET_TAG = 4;
     public static final int GET_SONG = 5;
     public static final int EDIT_SONG = 6;
+
+    public static final int CHANGE_PHOTO = 10 ;
+    public static final int PICK_FROM_CAMERA = 11;
+    public static final int PICK_FROM_FILE = 12;
+
 }

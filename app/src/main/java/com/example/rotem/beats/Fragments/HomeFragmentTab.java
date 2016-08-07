@@ -3,6 +3,7 @@ package com.example.rotem.beats.Fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,6 +30,7 @@ import java.util.List;
 
 public class HomeFragmentTab extends Fragment {
 
+    Model model = Model.getInstance();
     ListView list;
     List<Playlist> data;
     MyAdapter adapter;
@@ -204,9 +206,26 @@ public class HomeFragmentTab extends Fragment {
 
             TextView title = (TextView) convertView.findViewById(R.id.playlist_list_row_title);
             TextView author = (TextView) convertView.findViewById(R.id.playlist_list_row_author);
-            ImageView image = (ImageView) convertView.findViewById(R.id.playlist_list_row_image);
+            final ImageView image = (ImageView) convertView.findViewById(R.id.playlist_list_row_image);
 
             Playlist playlist = data.get(position);
+
+            // set photo
+            if (playlist.getPhoto() != null) {
+                final ProgressBar imageProgress = (ProgressBar) convertView.findViewById(R.id.playlist_list_image_progress);
+                imageProgress.setVisibility(View.VISIBLE);
+                model.loadImage(playlist.getPhoto(), new Model.LoadImageListener() {
+                    @Override
+                    public void onResult(Bitmap imageBmp) {
+                        imageProgress.setVisibility(View.GONE);
+                        image.setImageBitmap(imageBmp);
+                    }
+                });
+            }
+            else // playlist photo is null
+            {
+                image.setImageResource(R.drawable.beats2);
+            }
 
             title.setText(playlist.getTitle());
             author.setText("by " + playlist.getAuthor() + " at " + playlist.getCreationDate());

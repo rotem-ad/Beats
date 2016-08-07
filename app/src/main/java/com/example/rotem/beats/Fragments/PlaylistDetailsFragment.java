@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -48,6 +47,7 @@ public class PlaylistDetailsFragment extends Fragment {
     TextView rating;
     TextView createDate;
     ProgressBar progressBar;
+    ProgressBar imageProgress;
     String playlistId;
     String currentUser = MyApplication.getCurrentUser();
 
@@ -72,6 +72,7 @@ public class PlaylistDetailsFragment extends Fragment {
 
     private void init(final View view) {
         image = (ImageView) view.findViewById(R.id.playlist_details_image);
+        imageProgress = (ProgressBar) view.findViewById(R.id.playlist_details_image_progress);
         title = (TextView) view.findViewById(R.id.playlist_details_title);
         ratingBar = (RatingBar) view.findViewById(R.id.playlist_details_rating_bar);
         tags = (TextView) view.findViewById(R.id.playlist_details_tags);
@@ -118,14 +119,20 @@ public class PlaylistDetailsFragment extends Fragment {
                         setHasOptionsMenu(true);
                     }
 
+                    // set photo
                     if (playlist.getPhoto() != null) {
-
+                        imageProgress.setVisibility(View.VISIBLE);
                         model.loadImage(playlist.getPhoto(), new Model.LoadImageListener() {
                             @Override
                             public void onResult(Bitmap imageBmp) {
+                                imageProgress.setVisibility(View.GONE);
                                 image.setImageBitmap(imageBmp);
                             }
                         });
+                    }
+                    else // playlist photo is null
+                    {
+                        image.setImageResource(R.drawable.beats2);
                     }
 
                     // set stars according to playlist rating

@@ -50,7 +50,7 @@ public class ModelCloudinary {
         URL url = null;
         try {
             url = new URL(cloudinary.url().generate(imageName));
-            Log.d("ModelCloud:loadImage", "load image from url" + url);
+            Log.d("ModelCloud:loadImage", "load image from url " + url);
             Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
             return bmp;
         } catch (MalformedURLException e) {
@@ -58,7 +58,7 @@ public class ModelCloudinary {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("ModelCloud:loadImage", "url" + url);
+        Log.d("ModelCloud:loadImage", "url " + url);
 
         return null;
     }

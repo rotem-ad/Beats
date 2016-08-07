@@ -2,13 +2,11 @@ package com.example.rotem.beats.Fragments;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,10 +14,10 @@ import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -32,13 +30,17 @@ import com.example.rotem.beats.Adapters.SongListAdapter;
 import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
 import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
+import com.example.rotem.beats.Dialogs.ChangePhotoDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
 import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,13 +62,7 @@ public class PlaylistNewFragment extends Fragment {
     Button saveBtn;
     Button cancelBtn;
     Playlist playlist;
-
-    /************ Change Photo Variables ************/
-    private Uri imageCaptureUri;
-    private static final int PICK_FROM_CAMERA = 1;
-    private static final int PICK_FROM_FILE = 2;
     ImageButton btn_choose_image;
-    /***********************************************/
 
     public PlaylistNewFragment() {
         // Required empty public constructor
@@ -84,57 +80,6 @@ public class PlaylistNewFragment extends Fragment {
         adapter = new SongListAdapter(getActivity(),data);
 
         init(rootView);
-
-
-        /****************************** Change Photo Process - Start *******************************/
-        final String [] items = new String[]{"From Camera", "From Gallery"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Select Image");
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) { // from camera
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File file = new File(Environment.getExternalStorageDirectory(), "tmp_avater" + String.valueOf(System.currentTimeMillis()) + ".jpg");
-                    imageCaptureUri = Uri.fromFile(file);
-                    try {
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri);
-                        intent.putExtra("return data", true);
-
-                        startActivityForResult(intent, PICK_FROM_CAMERA);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    dialog.cancel();
-                } else { // from gallery
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Complete action using"), PICK_FROM_FILE);
-                }
-            }
-        });
-        final AlertDialog dialog = builder.create();
-
-        btn_choose_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.show();
-            }
-        });
-        /******************************* Change Photo Process - End *****************************************/
-
-//        addButton = (ImageButton) rootView.findViewById(R.id.playlist_button_add);
-//        addButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.image02);
-//                model.saveImage(image,"aman_patuy.jpg");
-//
-//            }
-//        });
-
         return rootView;
     }
 
@@ -166,6 +111,12 @@ public class PlaylistNewFragment extends Fragment {
             }
         });
 
+        btn_choose_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog(Constants.CHANGE_PHOTO);
+            }
+        });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,52 +176,29 @@ public class PlaylistNewFragment extends Fragment {
         }
 
         // change photo
-        if(resultCode != Activity.RESULT_OK)
-            return;
-        Bitmap bitmap = null;
-        String path;
-        if(requestCode == PICK_FROM_FILE){
-            imageCaptureUri = data.getData();
-            path = getRealPathFromUri(imageCaptureUri);
-            if(path == null)
-                path = imageCaptureUri.getPath();
-            if(path != null)
+        if ((requestCode == Constants.PICK_FROM_FILE) || (requestCode == Constants.PICK_FROM_CAMERA)) {
+            Uri imageCaptureUri;
+            String imageName;
+            String path;
+            Bitmap tempBitmap, bitmap;
+            if (requestCode == Constants.PICK_FROM_FILE) { // from gallery
+                imageCaptureUri = data.getData();
+                path = getRealPathFromUri(imageCaptureUri);
+                if (path == null)
+                    path = imageCaptureUri.getPath();
                 bitmap = BitmapFactory.decodeFile(path);
-        }else{
-            path =  imageCaptureUri.getPath();
-            bitmap = BitmapFactory.decodeFile(path);
+                imageName = String.valueOf(System.currentTimeMillis()) + "_" + path.substring(path.lastIndexOf("/") + 1);
+            } else {  // from camera
+                imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+                tempBitmap = data.getExtras().getParcelable("data");
+                bitmap = codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                //File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName);
+                //bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            }
+            playlist.setPhoto(imageName);
+            model.saveImage(bitmap, imageName);
+            image.setImageBitmap(bitmap);
         }
-
-        /*
-        *   Now the bitmap variable holds the photo we've been selected
-        *   either by choosing it from the gallery or photo which has been taken by camera.
-        *   Now we need to start manipulate it.
-         */
-//
-//        Bitmap rotated;
-//
-//        Matrix matrix = new Matrix();
-//        matrix.postRotate(90);
-//        rotated = Bitmap.createBitmap(bitmap, 0, 0,
-//                bitmap.getWidth(), bitmap.getHeight(),
-//                matrix, true);
-
-
-        String imageName = String.valueOf(System.currentTimeMillis()) + "_" + path.substring(path.lastIndexOf("/")+1);
-        playlist.setPhoto(imageName);
-        model.saveImage(bitmap,imageName);
-        image.setImageBitmap(bitmap);
-
-    }
-
-    public String getRealPathFromUri(Uri contentURI){
-        String [] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().managedQuery(contentURI, proj, null, null, null);
-        if(cursor == null)
-            return null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
 
     private void loadSongsData(){
@@ -297,10 +225,33 @@ public class PlaylistNewFragment extends Fragment {
             case Constants.GET_SONG:
                 fragment = new AddSongDialogFragment();
                 break;
+            case Constants.CHANGE_PHOTO:
+                fragment = new ChangePhotoDialogFragment();
+                break;
             default:
                 fragment = null;
         }
         fragment.setTargetFragment(this, dialogCode);
         fragment.show(fm, "Display dialog");
+    }
+
+    // compress bitmap to specified format and quality
+    private static Bitmap codec(Bitmap src, Bitmap.CompressFormat format,
+                                int quality) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        src.compress(format, quality, os);
+
+        byte[] array = os.toByteArray();
+        return BitmapFactory.decodeByteArray(array, 0, array.length);
+    }
+
+    private String getRealPathFromUri(Uri contentURI){
+        String [] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().managedQuery(contentURI, proj, null, null, null);
+        if(cursor == null)
+            return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 }
