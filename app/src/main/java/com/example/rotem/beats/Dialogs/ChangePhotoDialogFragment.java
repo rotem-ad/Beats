@@ -31,8 +31,6 @@ import java.io.IOException;
  */
 public class ChangePhotoDialogFragment extends DialogFragment {
 
-    private Uri imageCaptureUri;
-
     public ChangePhotoDialogFragment() {
         // Required empty public constructor
     }
@@ -48,13 +46,6 @@ public class ChangePhotoDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) { // from camera
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    //File file = new File(Environment.getExternalStorageDirectory(), "tmp_avater" + String.valueOf(System.currentTimeMillis()) + ".jpg");
-
-                    //String imageFileName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-                    //File imageFile = new File(dir, imageFileName);
-                    //imageCaptureUri = Uri.fromFile(imageFile);
-                    //intent.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri);
-                    //intent.putExtra("return data", true);
                     getTargetFragment().startActivityForResult(intent, Constants.PICK_FROM_CAMERA);
                     dialog.cancel();
                 } else { // from gallery

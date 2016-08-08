@@ -3,10 +3,8 @@ package com.example.rotem.beats.Fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,26 +12,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import com.example.rotem.beats.Adapters.PlaylistListAdapter;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Activities.PlaylistDetailsActivity;
 import com.example.rotem.beats.R;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class HomeFragmentTab extends Fragment {
-
-    Model model = Model.getInstance();
     ListView list;
     List<Playlist> data;
-    MyAdapter adapter;
+    PlaylistListAdapter adapter;
     ProgressBar progressBar;
     String searchTag;
     String searchAuthor;
@@ -50,7 +45,8 @@ public class HomeFragmentTab extends Fragment {
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
         list = (ListView) rootView.findViewById(R.id.playlist_listview);
-        adapter = new MyAdapter();
+        data = new LinkedList<>();
+        adapter = new PlaylistListAdapter(getActivity(),data);
         loadPlaylistsData();
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,10 +69,10 @@ public class HomeFragmentTab extends Fragment {
 
     void loadPlaylistsData(){
         progressBar.setVisibility(View.VISIBLE);
-        String userId = Model.getInstance().getUserId();
         Model.getInstance().getAllPlaylistsAsynch(new Model.GetPlaylistsListener() {
             @Override
             public void onResult(List<Playlist> playlists) {
+                data = null;
                 data = playlists;
                 list.setAdapter(adapter); // data must not be null at this point!
                 adapter.notifyDataSetChanged();
@@ -174,64 +170,4 @@ public class HomeFragmentTab extends Fragment {
         // show it
         alertDialog.show();
     }
-
-
-    class MyAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return data.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return data.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView,
-                            ViewGroup parent) {
-            if(convertView == null){
-                LayoutInflater inflater = LayoutInflater.from(getActivity());;
-                convertView = inflater.inflate(R.layout.fragment_home_playlists_list_row, null);
-                Log.d("TAG", "create view:" + position);
-            }else{
-                Log.d("TAG", "use convert view:" + position);
-            }
-
-            TextView title = (TextView) convertView.findViewById(R.id.playlist_list_row_title);
-            TextView author = (TextView) convertView.findViewById(R.id.playlist_list_row_author);
-            final ImageView image = (ImageView) convertView.findViewById(R.id.playlist_list_row_image);
-
-            Playlist playlist = data.get(position);
-
-            // set photo
-            if (playlist.getPhoto() != null) {
-                final ProgressBar imageProgress = (ProgressBar) convertView.findViewById(R.id.playlist_list_image_progress);
-                imageProgress.setVisibility(View.VISIBLE);
-                model.loadImage(playlist.getPhoto(), new Model.LoadImageListener() {
-                    @Override
-                    public void onResult(Bitmap imageBmp) {
-                        imageProgress.setVisibility(View.GONE);
-                        image.setImageBitmap(imageBmp);
-                    }
-                });
-            }
-            else // playlist photo is null
-            {
-                image.setImageResource(R.drawable.beats2);
-            }
-
-            title.setText(playlist.getTitle());
-            author.setText("by " + playlist.getAuthor() + " at " + playlist.getCreationDate());
-
-            return convertView;
-        }
-    }
-
 }

@@ -2,19 +2,14 @@ package com.example.rotem.beats.Fragments;
 
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +31,8 @@ import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
 import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
+import com.example.rotem.beats.Utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,12 +54,14 @@ public class PlaylistNewFragment extends Fragment {
     Button saveBtn;
     Button cancelBtn;
     Playlist playlist;
-    ImageButton btn_choose_image;
+    ImageButton changePhotoBtn;
+
+    Bitmap photoBitmap;
+    String imageName;
 
     public PlaylistNewFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,9 +77,8 @@ public class PlaylistNewFragment extends Fragment {
         return rootView;
     }
 
-
     private void init(View view) {
-        btn_choose_image = (ImageButton) view.findViewById(R.id.playlist_button_change_photo);
+        changePhotoBtn = (ImageButton) view.findViewById(R.id.playlist_button_change_photo);
         addSongBtn = (Button) view.findViewById(R.id.playlist_new_add_song);
         addTagBtn = (Button) view.findViewById(R.id.playlist_new_add_tag);
         saveBtn = (Button) view.findViewById(R.id.playlist_new_save);
@@ -111,7 +104,7 @@ public class PlaylistNewFragment extends Fragment {
             }
         });
 
-        btn_choose_image.setOnClickListener(new View.OnClickListener() {
+        changePhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDialog(Constants.CHANGE_PHOTO);
@@ -143,6 +136,8 @@ public class PlaylistNewFragment extends Fragment {
                         }
                     }
                 });
+
+                model.saveImage(photoBitmap, imageName);
 
                 Intent intent = new Intent();
                 getActivity().setResult(Activity.RESULT_OK, intent);
@@ -178,26 +173,42 @@ public class PlaylistNewFragment extends Fragment {
         // change photo
         if ((requestCode == Constants.PICK_FROM_FILE) || (requestCode == Constants.PICK_FROM_CAMERA)) {
             Uri imageCaptureUri;
-            String imageName;
             String path;
-            Bitmap tempBitmap, bitmap;
+            Bitmap tempBitmap;
             if (requestCode == Constants.PICK_FROM_FILE) { // from gallery
                 imageCaptureUri = data.getData();
-                path = getRealPathFromUri(imageCaptureUri);
+                path = Utils.getRealPathFromUri(getActivity(),imageCaptureUri);
                 if (path == null)
                     path = imageCaptureUri.getPath();
-                bitmap = BitmapFactory.decodeFile(path);
+                photoBitmap = BitmapFactory.decodeFile(path);
                 imageName = String.valueOf(System.currentTimeMillis()) + "_" + path.substring(path.lastIndexOf("/") + 1);
             } else {  // from camera
                 imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 tempBitmap = data.getExtras().getParcelable("data");
-                bitmap = codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                photoBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
                 //File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName);
                 //bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
             }
+
+
+            image.setImageBitmap(photoBitmap);
             playlist.setPhoto(imageName);
-            model.saveImage(bitmap, imageName);
-            image.setImageBitmap(bitmap);
+
+            /*
+
+            // galaxy s4
+
+            image.setVisibility(View.VISIBLE);
+            image.post(new Runnable() {
+                @Override
+                public void run() {
+                    image.setVisibility(View.GONE);
+                    image.setVisibility(View.VISIBLE);
+                    image.invalidate();
+                    image.requestLayout();
+                }
+            });
+            */
         }
     }
 
@@ -235,23 +246,4 @@ public class PlaylistNewFragment extends Fragment {
         fragment.show(fm, "Display dialog");
     }
 
-    // compress bitmap to specified format and quality
-    private static Bitmap codec(Bitmap src, Bitmap.CompressFormat format,
-                                int quality) {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        src.compress(format, quality, os);
-
-        byte[] array = os.toByteArray();
-        return BitmapFactory.decodeByteArray(array, 0, array.length);
-    }
-
-    private String getRealPathFromUri(Uri contentURI){
-        String [] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().managedQuery(contentURI, proj, null, null, null);
-        if(cursor == null)
-            return null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
 }

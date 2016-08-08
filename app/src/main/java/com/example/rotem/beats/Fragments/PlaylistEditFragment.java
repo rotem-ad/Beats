@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,11 +31,13 @@ import com.example.rotem.beats.Adapters.SongListAdapter;
 import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
 import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
+import com.example.rotem.beats.Dialogs.ChangePhotoDialogFragment;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
 import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
+import com.example.rotem.beats.Utils;
 
 import java.util.LinkedList;
 
@@ -50,7 +54,9 @@ public class PlaylistEditFragment extends Fragment {
     TextView title;
     TextView tags;
     ProgressBar progressBar;
+    ProgressBar imageProgress;
     String playlistId;
+    ImageButton changePhotoBtn;
     Button addTagBtn;
     Button addSongBtn;
     Button saveBtn;
@@ -59,6 +65,9 @@ public class PlaylistEditFragment extends Fragment {
     String currSongArtist;
     String currSongTitle;
     int currSongId;
+
+    Bitmap photoBitmap;
+    String imageName;
 
     boolean modified;
 
@@ -82,9 +91,10 @@ public class PlaylistEditFragment extends Fragment {
 
     private void init(final View view) {
         image = (ImageView) view.findViewById(R.id.playlist_edit_image);
+        imageProgress = (ProgressBar) view.findViewById(R.id.playlist_edit_image_progress);
         title = (EditText) view.findViewById(R.id.playlist_edit_title);
         tags = (TextView) view.findViewById(R.id.playlist_edit_tags);
-
+        changePhotoBtn = (ImageButton) view.findViewById(R.id.playlist_edit_button_change_photo);
         saveBtn = (Button) view.findViewById(R.id.playlist_edit_save);
         cancelBtn = (Button) view.findViewById(R.id.playlist_edit_cancel);
         addSongBtn = (Button) view.findViewById(R.id.playlist_edit_add_song);
@@ -98,9 +108,20 @@ public class PlaylistEditFragment extends Fragment {
             public void onResult(final Playlist playlist) {
                 mPlaylist = playlist;
                 if (mPlaylist != null) {
+                    // set photo
                     if (mPlaylist.getPhoto() != null) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(mPlaylist.getPhoto());
-                        image.setImageBitmap(bitmap);
+                        imageProgress.setVisibility(View.VISIBLE);
+                        model.loadImage(playlist.getPhoto(), new Model.LoadImageListener() {
+                            @Override
+                            public void onResult(Bitmap imageBmp) {
+                                imageProgress.setVisibility(View.GONE);
+                                image.setImageBitmap(imageBmp);
+                            }
+                        });
+                    }
+                    else // playlist photo is null
+                    {
+                        image.setImageResource(R.drawable.beats2);
                     }
 
                     title.setText(mPlaylist.getTitle());
@@ -127,6 +148,13 @@ public class PlaylistEditFragment extends Fragment {
             @Override
             public void onCancel() {
 
+            }
+        });
+
+        changePhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog(Constants.CHANGE_PHOTO);
             }
         });
 
@@ -184,6 +212,8 @@ public class PlaylistEditFragment extends Fragment {
                     }
                 });
 
+                model.saveImage(photoBitmap, imageName);
+
                 Intent intent = new Intent();
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
@@ -199,6 +229,8 @@ public class PlaylistEditFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Make sure fragment codes match up
+
+        // add tag
         if (requestCode == Constants.GET_TAG) {
             String tagInput = data.getStringExtra("TAG");
             String tagList = "";
@@ -209,6 +241,7 @@ public class PlaylistEditFragment extends Fragment {
             tags.setText(tagList);
         }
 
+        // add song
         if (requestCode == Constants.GET_SONG) {
             String artistInput = data.getStringExtra("ARTIST");
             String titleInput = data.getStringExtra("TITLE");
@@ -220,6 +253,7 @@ public class PlaylistEditFragment extends Fragment {
             adapter.notifyDataSetChanged(); // notify adapter
         }
 
+        // edit song
         if (requestCode == Constants.EDIT_SONG) {
             String artistInput = data.getStringExtra("ARTIST");
             String titleInput = data.getStringExtra("TITLE");
@@ -228,8 +262,33 @@ public class PlaylistEditFragment extends Fragment {
             mPlaylist.getSongList().get(currSongId).setTitle(titleInput);
             adapter.notifyDataSetChanged(); // notify adapter
         }
-    }
 
+        // change photo
+        if ((requestCode == Constants.PICK_FROM_FILE) || (requestCode == Constants.PICK_FROM_CAMERA)) {
+            Uri imageCaptureUri;
+            String path;
+            Bitmap tempBitmap;
+            // from gallery
+            if (requestCode == Constants.PICK_FROM_FILE) {
+                imageCaptureUri = data.getData();
+                path = Utils.getRealPathFromUri(getActivity(),imageCaptureUri);
+                if (path == null)
+                    path = imageCaptureUri.getPath();
+                photoBitmap = BitmapFactory.decodeFile(path);
+                imageName = String.valueOf(System.currentTimeMillis()) + "_" + path.substring(path.lastIndexOf("/") + 1);
+            }
+            else // from camera
+            {
+                imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+                tempBitmap = data.getExtras().getParcelable("data");
+                photoBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+            }
+
+            mPlaylist.setPhoto(imageName);
+            image.setImageBitmap(photoBitmap);
+        }
+
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -270,6 +329,9 @@ public class PlaylistEditFragment extends Fragment {
                 break;
             case Constants.GET_SONG:
                 fragment = new AddSongDialogFragment();
+                break;
+            case Constants.CHANGE_PHOTO:
+                fragment = new ChangePhotoDialogFragment();
                 break;
             case Constants.EDIT_SONG:
                 fragment = new AddSongDialogFragment();
