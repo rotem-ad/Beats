@@ -188,6 +188,7 @@ public class PlaylistNewFragment extends Fragment {
                 imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 tempBitmap = data.getExtras().getParcelable("data");
                 photoBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                // TODO: add rotate photo
                 //File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName);
                 //bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
             }

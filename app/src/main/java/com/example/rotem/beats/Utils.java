@@ -32,4 +32,6 @@ public class Utils {
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
+
+    // TODO: add rotate photo
 }
