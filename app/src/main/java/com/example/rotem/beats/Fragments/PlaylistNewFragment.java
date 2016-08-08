@@ -137,7 +137,9 @@ public class PlaylistNewFragment extends Fragment {
                     }
                 });
 
-                model.saveImage(photoBitmap, imageName);
+                if (photoBitmap != null) {
+                    model.saveImage(photoBitmap, imageName);
+                }
 
                 Intent intent = new Intent();
                 getActivity().setResult(Activity.RESULT_OK, intent);

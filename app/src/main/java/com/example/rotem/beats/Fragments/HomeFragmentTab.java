@@ -16,10 +16,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.example.rotem.beats.Activities.PlaylistDetailsActivity;
 import com.example.rotem.beats.Adapters.PlaylistListAdapter;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
-import com.example.rotem.beats.Activities.PlaylistDetailsActivity;
 import com.example.rotem.beats.R;
 
 import java.util.LinkedList;
@@ -72,9 +72,9 @@ public class HomeFragmentTab extends Fragment {
         Model.getInstance().getAllPlaylistsAsynch(new Model.GetPlaylistsListener() {
             @Override
             public void onResult(List<Playlist> playlists) {
-                data = null;
                 data = playlists;
                 list.setAdapter(adapter); // data must not be null at this point!
+                adapter.setData(data);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
             }
@@ -85,7 +85,6 @@ public class HomeFragmentTab extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -146,6 +145,7 @@ public class HomeFragmentTab extends Fragment {
                                     public void onResult(List<Playlist> playlists) {
                                         data = playlists;
                                         list.setAdapter(adapter); // data must not be null at this point!
+                                        adapter.setData(data);
                                         adapter.notifyDataSetChanged();
                                         progressBar.setVisibility(View.GONE);
                                     }

@@ -87,4 +87,8 @@ public class PlaylistListAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    public void setData(List<Playlist> data) {
+        this.data = data;
+    }
 }
