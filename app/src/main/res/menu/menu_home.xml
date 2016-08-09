@@ -4,8 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.MyBeatsFragmentTab">
 
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
     <item
         android:id="@+id/action_seach_playlist"
         android:icon="@drawable/search1"
@@ -13,4 +11,9 @@
         android:title="@string/action_search_playlist"
         android:orderInCategory="100"
         app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/action_seach_playlist2"
+        android:orderInCategory="100"
+        android:title="@string/action_search_playlist"
+        app:showAsAction="never" />
 </menu>

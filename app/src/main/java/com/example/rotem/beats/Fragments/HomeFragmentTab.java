@@ -106,7 +106,8 @@ public class HomeFragmentTab extends Fragment {
             case R.id.action_seach_playlist:
                 this.searchPlaylists();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_seach_playlist2:
+                this.searchPlaylists();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

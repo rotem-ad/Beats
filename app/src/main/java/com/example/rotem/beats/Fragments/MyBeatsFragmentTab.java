@@ -157,7 +157,8 @@ public class MyBeatsFragmentTab extends Fragment {
             case R.id.action_new_playlist:
                 this.addNewPlaylist();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_new_playlist2:
+                this.addNewPlaylist();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

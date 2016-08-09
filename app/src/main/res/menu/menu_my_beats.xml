@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.MyBeatsFragmentTab">
-
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
     <item
         android:id="@+id/action_new_playlist"
         android:icon="@drawable/plus"
@@ -13,4 +10,9 @@
         android:title="@string/action_new_playlist"
         android:orderInCategory="100"
         app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/action_new_playlist2"
+        android:orderInCategory="100"
+        android:title="@string/action_new_playlist"
+        app:showAsAction="never" />
 </menu>

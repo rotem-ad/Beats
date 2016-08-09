@@ -196,10 +196,14 @@ public class PlaylistDetailsFragment extends Fragment {
             case R.id.action_del_playlist:
                 this.removePlaylist();
                 return true;
+            case R.id.action_del_playlist2:
+                this.removePlaylist();
+                return true;
             case R.id.action_edit_playlist:
                 this.editPlaylist();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_edit_playlist2:
+                this.editPlaylist();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

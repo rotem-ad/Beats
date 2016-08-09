@@ -235,6 +235,9 @@ public class PlaylistEditFragment extends Fragment {
         // add tag
         if (requestCode == Constants.GET_TAG) {
             String tagInput = data.getStringExtra("TAG");
+            if (mPlaylist.getTags() == null) {
+                mPlaylist.setTags(new LinkedList<String>());
+            }
             String tagList = "";
             mPlaylist.getTags().add(tagInput);
             for (String tag : mPlaylist.getTags()) {
