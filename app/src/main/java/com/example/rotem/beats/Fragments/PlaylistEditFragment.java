@@ -282,9 +282,10 @@ public class PlaylistEditFragment extends Fragment {
             else // from camera
             {
                 imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-                tempBitmap = data.getExtras().getParcelable("data");
-                photoBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
-                // TODO: add rotate photo
+                //tempBitmap = data.getExtras().getParcelable("data");
+                tempBitmap = (Bitmap) data.getExtras().get("data");
+                tempBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                photoBitmap = Utils.rotateImage(tempBitmap,90);
             }
 
             mPlaylist.setPhoto(imageName);

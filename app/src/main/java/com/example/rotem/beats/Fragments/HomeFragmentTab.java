@@ -1,5 +1,6 @@
 package com.example.rotem.beats.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 
 import com.example.rotem.beats.Activities.PlaylistDetailsActivity;
 import com.example.rotem.beats.Adapters.PlaylistListAdapter;
+import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.R;
@@ -57,7 +59,7 @@ public class HomeFragmentTab extends Fragment {
                 //Toast.makeText(MyApplication.getAppContext(),"Playlist ID: " + playlistId , Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), PlaylistDetailsActivity.class);
                 intent.putExtra("PLAYLIST_ID", playlistId);
-                startActivityForResult(intent,1); // TODO: change 1 to constant
+                startActivityForResult(intent,Constants.PLAYLIST_DETAILS);
             }
         });
 
@@ -169,5 +171,16 @@ public class HomeFragmentTab extends Fragment {
 
         // show it
         alertDialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.PLAYLIST_DETAILS) {
+            if(resultCode == Activity.RESULT_OK){
+                loadPlaylistsData();
+            }
+        }
     }
 }

@@ -187,12 +187,11 @@ public class PlaylistNewFragment extends Fragment {
             } else {  // from camera
                 imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 tempBitmap = data.getExtras().getParcelable("data");
-                photoBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
-                // TODO: add rotate photo
+                tempBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                photoBitmap = Utils.rotateImage(tempBitmap,90);
                 //File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName);
                 //bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
             }
-
 
             image.setImageBitmap(photoBitmap);
             playlist.setPhoto(imageName);
