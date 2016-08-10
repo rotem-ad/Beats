@@ -174,6 +174,9 @@ public class PlaylistNewFragment extends Fragment {
 
         // change photo
         if ((requestCode == Constants.PICK_FROM_FILE) || (requestCode == Constants.PICK_FROM_CAMERA)) {
+            if (resultCode != Activity.RESULT_OK) {
+                return;
+            }
             Uri imageCaptureUri;
             String path;
             Bitmap tempBitmap;
