@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,6 +127,7 @@ public class ModelFirebase {
                         plList.add(playlist);
                     }
                 }
+                Collections.sort(plList, new PlayListByDateComparer()); // sort playlists by date
                 listener.onResult(plList);
                 return;
             }
@@ -153,6 +155,7 @@ public class ModelFirebase {
                     Log.d("getPlaylistsByUser", playlist.getAuthor() + " - " + playlist.getTitle());
                     plList.add(playlist);
                 }
+                Collections.sort(plList, new PlayListByDateComparer()); // sort playlists by date
                 listener.onResult(plList);
             }
 
@@ -349,30 +352,4 @@ public class ModelFirebase {
             }
         });
     }
-
-
-    /*
-    private void seed() {
-        generateData();
-        DatabaseReference userPlaylists = dbRef.child("users").child(this.getUserId()).child("playlists"); // ref to current user's playlists
-        Map<String, Object> childUpdates = new HashMap<>();
-
-        for (Playlist playlist : playlistData) {
-            String playlistId = userPlaylists.push().getKey(); // generate key in DB
-            playlist.setId(playlistId); // set id to current playlist object based on its DB key
-            Map<String, Object> playlistValues = playlist.toMap();
-            childUpdates.put("/users/" + getUserId() + "/playlists/" + playlistId , playlistValues);
-        }
-
-        dbRef.updateChildren(childUpdates);
-    }
-
-    private void generateData() {
-        playlistData = new LinkedList<Playlist>();
-        playlistData.add(new Playlist("Stas Playlist 1","Stas"));
-        playlistData.add(new Playlist("Stas Playlist 2","Stas"));
-    }
-
-    */
-
 }
