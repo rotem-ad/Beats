@@ -10,8 +10,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.rotem.beats.Constants;
+import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
 
 /**
@@ -33,7 +35,7 @@ public class AddSongDialogFragment extends DialogFragment {
         View promptsView = li.inflate(R.layout.dialog_add_song, null);
 
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(promptsView); // set dialog_add_song.xml to alertdialog builder
 
         final EditText artistUserInput = (EditText) promptsView.findViewById(R.id.add_song_artist);
@@ -54,6 +56,14 @@ public class AddSongDialogFragment extends DialogFragment {
                                 // get user input and pass it to invoking fragment
                                 artistInput = artistUserInput.getText().toString();
                                 titleInput = titleUserInput.getText().toString();
+
+                                // validate non empty input
+                                if  (artistInput.isEmpty() || titleInput.isEmpty()) {
+                                    Toast.makeText(MyApplication.getAppContext(), "Artist/Title can't be empty" ,
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
                                 sendResult(Constants.GET_SONG);
                             }
                         })

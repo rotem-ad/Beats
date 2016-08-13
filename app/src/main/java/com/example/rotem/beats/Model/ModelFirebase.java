@@ -30,12 +30,9 @@ public class ModelFirebase {
     FirebaseDatabase database;
     DatabaseReference dbRef;
 
-    List<Playlist> playlistData; // TODO: replace with Firebase
-
     public ModelFirebase() {
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
-        //seed();
     }
 
     public void signup(String email, String password, final Model.AuthListener listener){
@@ -225,7 +222,7 @@ public class ModelFirebase {
         });
     }
 
-    public void updatePlaylistRating(final String id, final float userRating, final Model.GetPlaylistRating listener) { //TODO: fix formula
+    public void updatePlaylistRating(final String id, final float userRating, final Model.GetPlaylistRating listener) {
 
         DatabaseReference playlistRef = dbRef.child(Constants.USERS_COLLECTION); // ref to users collection
         playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
