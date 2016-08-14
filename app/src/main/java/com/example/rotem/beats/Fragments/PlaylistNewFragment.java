@@ -26,12 +26,12 @@ import com.example.rotem.beats.Constants;
 import com.example.rotem.beats.Dialogs.AddSongDialogFragment;
 import com.example.rotem.beats.Dialogs.AddTagDialogFragment;
 import com.example.rotem.beats.Dialogs.ChangePhotoDialogFragment;
+import com.example.rotem.beats.ImageUtils;
 import com.example.rotem.beats.Model.Model;
 import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
 import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
-import com.example.rotem.beats.Utils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -182,7 +182,7 @@ public class PlaylistNewFragment extends Fragment {
             Bitmap tempBitmap;
             if (requestCode == Constants.PICK_FROM_FILE) { // from gallery
                 imageCaptureUri = data.getData();
-                path = Utils.getRealPathFromUri(getActivity(),imageCaptureUri);
+                path = ImageUtils.getRealPathFromUri(getActivity(),imageCaptureUri);
                 if (path == null)
                     path = imageCaptureUri.getPath();
                 photoBitmap = BitmapFactory.decodeFile(path);
@@ -190,8 +190,8 @@ public class PlaylistNewFragment extends Fragment {
             } else {  // from camera
                 imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 tempBitmap = data.getExtras().getParcelable("data");
-                tempBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
-                photoBitmap = Utils.rotateImage(tempBitmap,90);
+                tempBitmap = ImageUtils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                photoBitmap = ImageUtils.rotateImage(tempBitmap,90);
                 //File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName);
                 //bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
             }

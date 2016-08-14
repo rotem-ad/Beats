@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * Created by ROTEM-A on 08/08/2016.
  */
-public class Utils {
+public class ImageUtils {
     // compress bitmap to specified format and quality
     public static Bitmap codec(Bitmap src, Bitmap.CompressFormat format,
                                 int quality) {

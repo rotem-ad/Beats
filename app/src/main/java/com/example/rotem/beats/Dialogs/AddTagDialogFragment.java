@@ -10,8 +10,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.rotem.beats.Constants;
+import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
 
 /**
@@ -44,6 +46,14 @@ public class AddTagDialogFragment extends DialogFragment {
                             public void onClick(DialogInterface dialog,int id) {
                                 // get user input and pass it to invoking fragment
                                 tagInput = tagUserInput.getText().toString();
+
+                                // validate non empty input
+                                if  (tagInput.isEmpty()) {
+                                    Toast.makeText(MyApplication.getAppContext(), "Tag can't be empty" ,
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
                                 sendResult(Constants.GET_TAG);
                             }
                         })

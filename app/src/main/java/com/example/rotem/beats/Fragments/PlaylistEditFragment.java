@@ -37,7 +37,7 @@ import com.example.rotem.beats.Model.Playlist;
 import com.example.rotem.beats.Model.Song;
 import com.example.rotem.beats.MyApplication;
 import com.example.rotem.beats.R;
-import com.example.rotem.beats.Utils;
+import com.example.rotem.beats.ImageUtils;
 
 import java.util.LinkedList;
 
@@ -279,7 +279,7 @@ public class PlaylistEditFragment extends Fragment {
             // from gallery
             if (requestCode == Constants.PICK_FROM_FILE) {
                 imageCaptureUri = data.getData();
-                path = Utils.getRealPathFromUri(getActivity(),imageCaptureUri);
+                path = ImageUtils.getRealPathFromUri(getActivity(),imageCaptureUri);
                 if (path == null)
                     path = imageCaptureUri.getPath();
                 photoBitmap = BitmapFactory.decodeFile(path);
@@ -290,8 +290,8 @@ public class PlaylistEditFragment extends Fragment {
                 imageName = "tmp_cam_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 //tempBitmap = data.getExtras().getParcelable("data");
                 tempBitmap = (Bitmap) data.getExtras().get("data");
-                tempBitmap = Utils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
-                photoBitmap = Utils.rotateImage(tempBitmap,90);
+                tempBitmap = ImageUtils.codec(tempBitmap,Bitmap.CompressFormat.JPEG,100);
+                photoBitmap = ImageUtils.rotateImage(tempBitmap,90);
             }
 
             mPlaylist.setPhoto(imageName);
