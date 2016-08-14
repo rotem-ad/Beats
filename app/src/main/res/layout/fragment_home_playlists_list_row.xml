@@ -39,6 +39,7 @@
                 android:id="@+id/playlist_list_row_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="title"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
